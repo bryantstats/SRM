@@ -1,0 +1,189 @@
+---
+title: "AYU - Pod Week 1"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = FALSE)
+```
+
+In this POD assignment, we will use R to compute the single linear model and view its summary result. R is the most popular statistical programming language and in each of our POD assignments, we will use R to implement the methods that we cover during the week.
+
+In this first POD assignment, please watch the instruction video to understand how you should do the assignment and submit them to Canvas for grading.
+
+### Instruction
+
+1.  *Watch this [Video Instruction](https://drive.google.com/file/d/1-iswKjJpGn_fF3XOtyI__taRhEGX4OMw/view). This video will go through the steps in this instruction to show you how to do the assignment and submit it.*
+
+2.  *Install R, Rstudio and the package `rmarkdown` as follows.*
+
+    -   *Download R at [this link](https://cran.r-project.org/bin/windows/base/)*
+
+    -   *Download Rstudio at [this link](https://posit.co/download/rstudio-desktop/)*
+
+    -   *Install R*
+
+    -   *Install Rstudio*
+
+    -   *Open Rstudio, in the console, type: `install.packages('rmarkdown')`*
+
+3.  *Download the submission Rmarkdown file at [this link](01_ayu_pod_submission.Rmd)*
+
+4.  *Open the submission file using Rstudio and write R codes below each question to answer the question. To insert a code chunk, use Ctrl + Alt + I.*
+
+5.  *Answer the questions to learn about the subject. Question without the asterisk (\*) have the answers given to you. For question that have the answer, you still need to copy the codes and answer them. For question that do not have the answer, you need to create your own codes to answer the question.*
+
+6.  *Once you are done answering all the question, Knit the file (Use: Ctrl + Shift + K or Click to Knit -\> Knit to pdf) to convert the Rmarkdown file into a pdf file.*
+
+7.  *Submit the pdf to Canvas.*
+
+------------------------------------------------------------------------
+
+### Question 1
+
+Given the following data
+
+| x   | 2   | 3   | 5   | 6   | 1   | 9   | 10  | 15  |
+|:----|:----|:----|:----|:----|:----|:----|:----|:----|
+| y   | 1   | 4   | 6   | 4   | 4   | 3   | 20  | 25  |
+
+a.  Calculate the mean, standard deviation, and variance of $x$
+b.  Calculate the correlation of $x$ and $y$
+c.  Run a linear model when regressing $y$ on $x$.
+
+------------------------------------------------------------------------
+
+[***How to do it?***]{.underline}
+
+-   Open Rstudio
+-   To create two vectors $x$ and $y$
+
+```{r}
+x = c(2, 3, 5, 6, 1, 9, 10, 15)
+y = c(1, 4, 6, 4, 4, 3, 20, 25)
+```
+
+-   To find the mean of $x$
+
+```{r}
+mean(x)
+```
+
+-   To find the standard deviation of $x$
+
+```{r}
+sd(x)
+```
+
+-   To find the variance of $x$
+
+```{r}
+var(x)
+```
+
+-   Correlation
+
+```{r}
+cor(x,y)
+```
+
+-   To regress $y$ on $x$ use the `lm` function
+
+```{r}
+my_linear_model = lm(y~x)
+```
+
+-   To show the result use
+
+```{r}
+summary(my_linear_model)
+```
+
+------------------------------------------------------------------------
+
+### Question 2\*
+
+Given the following data
+
+| x   | 2   | 3   | 5   | 6   | 1   |
+|:----|:----|:----|:----|:----|:----|
+| y   | 1   | 4   | 6   | 4   | 4   |
+
+a.  Calculate the mean, standard deviation, and variance of $x$
+b.  Calculate the correlation of $x$ and $y$
+c.  Run a linear model when regressing $y$ on $x$.
+
+------------------------------------------------------------------------
+
+### Question 3
+
+a.  Import in R the `Automobile UK Collision Claims` dataset at
+
+-   [Collision Claims](https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Regression%20Modeling/BookWebDec2010/CSVData/AutoCollision.csv) or [Alternative Link](data/AutoCollision.csv)
+
+b.  Use the View function to view the data
+
+------------------------------------------------------------------------
+
+[***How to do it?***]{.underline}
+
+a.  We will use the `read_csv` function to read the data. To use this function, we can install a package containing the function, the `tidyverse` package.
+
+In the Rstudio console
+
+```{r}
+install.packages('tidyverse')
+```
+
+We need to call the package first (using the `library` function) to use the `read_csv` function. The codes are as follows.
+
+```{r}
+library(tidyverse)
+d = read_csv('https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Regression%20Modeling/BookWebDec2010/CSVData/AutoCollision.csv')
+```
+
+Alternatively, we can download the file to our computer and use the `read_csv` function to read the data. For example: if the dataset file is on your computer say the data file `data.csv` at `C:\SRM\Data\data.csv` use
+
+```{r}
+d = read_csv('C:\\SRM\\Data\\data.csv')
+```
+
+b.  Use the `View` function to view the data
+
+```{r}
+View(d)
+```
+
+------------------------------------------------------------------------
+
+### Question 4
+
+Run linear regression to regress the `Claim_Count` on the `Severity`. Give the summary of the model.
+
+------------------------------------------------------------------------
+
+[***How to do it?***]{.underline}
+
+We use the dollar sign (\$) to refer to the column of the dataset. The codes for the linear model and its summary as follows.
+
+```{r}
+my_second_model = lm(d$Claim_Count~d$Severity)
+summary(my_second_model)
+```
+
+------------------------------------------------------------------------
+
+### Question 5\*
+
+In this question, we will use the `Automobile Insurance Claims` dataset at the below link.
+
+[Automobile Insurance Claims](https://bryantstats.github.io/SRM/ayu_pod/data/frees/AutoClaims.csv)
+
+a.  Import the following dataset into Rstudio.
+b.  View the dataset.
+c.  Run linear model to regress `PAID` on `AGE`. Report the summary of this model.
+
+------------------------------------------------------------------------

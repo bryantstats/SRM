@@ -1,0 +1,222 @@
+
+---
+title: "Week 2 - AYU - Pod"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: united
+  word_document:
+    toc: yes
+---
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+![](term_life.png)
+
+*In this practice, we will study a term life insurance dataset collected by the Survey of Consumer Finances (SCF) which includes information about face values of life insurance demographic characteristics the customers such as age, income and martial status.  we will use multiple linear model to predict the face value of term life insurance.  We will demonstrate how categorical work in the model and perform F-test to compare a reduced model and a full model.  We also discuss different ways to improve the model performance such as variable transformation, adding  new variables and interaction terms. We then discuss the issue of collinearity and how to overcome it. You will have an opportunity to practice what you learn in a 
+*
+
+## 1. MLR in R
+
+```{r}
+library(tidyverse)
+d <- read_csv("data/TermLife.csv")
+d1 <- d[d$FACE>0, ]
+modelMLR <- lm(FACE ~ EDUCATION+NUMHH+INCOME, data=d1)
+summary(modelMLR)
+```
+
+## 2. Prediction
+
+```{r}
+predict(modelMLR, list(EDUCATION = 14, NUMHH =2, INCOME = 54000))
+predict(modelMLR, list(EDUCATION = c(14, 20), NUMHH = c(2, 4), INCOME = c(54000, 32000)))
+predict(modelMLR, list(EDUCATION = 14, NUMHH =2, INCOME = 54000), interval = 'confidence', level = 0.95)
+```
+
+## 3. Categorical Variables
+
+```{r}
+modelMLR <- lm(FACE ~ EDUCATION+NUMHH+INCOME + factor(ETHNICITY), data=d1)
+summary(modelMLR)
+predict(modelMLR, list(EDUCATION = 14, NUMHH =2, INCOME = 54000, ETHNICITY=1))
+```
+## 4. Reduced vs Full Model (Lack of fit Test)
+
+```{r}
+fullmodel <- lm(FACE ~ EDUCATION+NUMHH+INCOME, data=d1)
+redmodel <- lm(FACE ~ EDUCATION+NUMHH, data=d1)
+
+anova(redmodel,fullmodel)
+```
+
+
+## 5. Improving Models
+
+- Transformation
+
+```{r}
+modelMLR <- lm(log(FACE) ~ NUMHH+log(INCOME) + factor(ETHNICITY), data=d1)
+summary(modelMLR)
+```
+
+
+- Add More variables
+
+```{r}
+modelMLR <- lm(log(FACE) ~ EDUCATION + NUMHH+log(INCOME) + factor(ETHNICITY), data=d1)
+summary(modelMLR)
+```
+
+
+- Add Interactions
+
+```{r}
+
+modelMLR <- lm(log(FACE) ~ EDUCATION + NUMHH+log(INCOME) + factor(ETHNICITY) + EDUCATION*NUMHH*ETHNICITY, data=d1)
+summary(modelMLR)
+```
+```{r}
+modelMLR <- lm(log(FACE) ~ poly(log(INCOME), 2), data=d1)
+summary(modelMLR)
+```
+
+
+## 6. Collinearity
+
+```{r}
+library(tidyverse)
+library(corrplot)
+library(car)  
+
+bloodpress <- read_csv("data/bloodpress.csv")
+
+model <- lm(BP ~ Age +  Weight + BSA  +    Dur +  Pulse +  Stress, data=bloodpress)
+summary(model)
+
+# Check for collinearity
+vif(model)
+
+```
+
+
+```{r}
+# Check the correlation
+corrplot(cor(bloodpress[, -1]), method = "number", type = "upper", diag = FALSE)
+```
+
+We notice that BSA and Pulse has high correlation with other variables. We will remove one of these variables and recheck the vif
+
+```{r}
+model <- lm(BP ~ Age +  Weight + BSA +    Dur  +  Stress, data=bloodpress)
+
+summary(model)
+
+# Check for collinearity
+vif(model)
+```
+
+
+```{r}
+model <- lm(BP ~ Age +  Weight + Dur +  Pulse +  Stress, data=bloodpress)
+
+summary(model)
+
+# Check for collinearity
+vif(model)
+```
+
+From the new vif, we will decide to remove BSA. 
+
+## 7. Questions
+
+In this AYU, we will examine the hospital cost of patients in Wisconsin in 2003 using patients' information such as their age, gender, and their length of stay at the hospital.  
+
+```{r, echo = FALSE, include=FALSE}
+library(tidyverse)
+d <- read_csv('data/frees/HospitalCosts.csv')
+```
+
+1. Regress the total charge (`TOTCHG`) on age and length of stay. What is the R-squared of the regression? With significant level of 5%, is there any variable not significant based on coefficient p-values of the model?
+
+```{r, echo = FALSE, include=FALSE}
+model = lm(TOTCHG~AGE +LOS, data = d)
+summary(model)
+```
+
+
+2. Use the model to predict the total charge of a 13-year-old that stays a week at a hospital. 
+
+```{r, echo = FALSE, include=FALSE}
+predict(model, list(AGE = 13, LOS = 7))
+```
+
+
+3. Adding variable `GENDER` to the regression.  Write the equations of this new linear model. Use the model to predict the total charge of a 13-year-old female that stays a week at a hospital. 
+
+```{r, echo = FALSE, include=FALSE}
+summary(lm(TOTCHG~AGE + LOS + factor(GENDER), data = d))
+predict(model, list(AGE = 13, LOS = 7, GENDER = 1))
+```
+
+4. Are both AGE and APRDRG not significant and should not be added to the model? Use the F-test to address the question. 
+
+```{r, echo = FALSE, include=FALSE}
+reduced <- lm(TOTCHG~ LOS + factor(GENDER) + factor(RACE) , data = d)
+full <- lm(TOTCHG~ LOS + factor(GENDER) + factor(RACE) + AGE + APRDRG, data = d)
+anova(reduced, full)
+```
+5. Could you improve the model in 3 using the methods discussed for the term life dataset?
+
+```{r, echo = FALSE, include=FALSE}
+full <- lm(log(TOTCHG)~ LOS + factor(GENDER) + factor(RACE) + AGE + APRDRG, data = d)
+```
+
+
+6. Make a correlation plot. Calculate the vif. Should one pursue multilinearity analysis on the model?
+
+7. In this question, we study the the seatpos dataset to study the car seat position of the driver at their comfort. This dataset is collected by the University of Michigan collected data on 38 drivers.
+
+https://search.r-project.org/CRAN/refmans/faraway/html/seatpos.html
+
+We would like to regress `hipcenter` on all other variables.  Check the VIF of this regression and handle the multilinearity issue if it occurs. 
+
+```{r, echo = FALSE, include=FALSE}
+d1 <- read_csv('data/seatpos.csv')
+corrplot(cor(d1[, -1]), method = "number", type = "upper", diag = FALSE)
+m1 = lm(hipcenter~., data = d1)
+vif(m1)
+```
+
+
+```{r, echo = FALSE, include=FALSE}
+vif(m1)
+m1 = lm(hipcenter~ Age   +  Weight +   HtShoes +      Seated +       Arm  +    Thigh  +      Leg , data = d1)
+vif(m1)
+m1 = lm(hipcenter~ Age   +  Weight +                  Seated +       Arm  +    Thigh  +      Leg , data = d1)
+vif(m1)
+```
+
+## 8. Submission
+
+We will use rmarkdown document for AYU submission.  Rmarkdown allows us to include r codes and the output of r codes in a same document.  It also serves as a text editor where we can write our analysis.  The document that you are looking at now is an example of an Rmarkdown document. It also has a [pdf version]() and a[Microsoft Word version]().  The Rmarkdown version of this AYU is [here](02_ayu_pod.Rmd).
+
+Follow these steps to create your Rmarkdown document. 
+
+- Step 1. Download a template Rmarkdown at [this link](02_ayu_pod_template.Rmd)
+
+- Step 2. Open the download file with Rstudio
+
+- Step 3. For each question, there is an R section where you will include the R codes to answer the questions. 
+
+- Step 4. Once you finish answering all the question. Click to `Knit` then choose `Knit to PDF` to generate the PDF version of the answers. 
+
+- Step 5. Submit the PDF to Canvas. 
+
