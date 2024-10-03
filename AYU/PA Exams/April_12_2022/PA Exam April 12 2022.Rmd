@@ -1,0 +1,195 @@
+
+This code is for the April 2022 PA Exam
+
+Starter code: This first chunk should be run first.
+
+IMPORTANT NOTE: When pasting a picture from RStudio to Word, there is only one approach that will work. After right clicking on the image in RStudio and selecting “copy” the following steps need to be taken in Word. On the Home menu, click on the down arrow under “Paste” and then select “Paste Special …” From the list of options, select “Device Independent Bitmap.” 
+
+```{r}
+
+# The tidyverse contains ggplot2, readr, and other libraries.
+
+library(tidyverse)
+
+# c15 indicates the variable types of the data.
+
+c15 <- c(rep(c("numeric"),8),rep(c("factor"),7))
+
+
+# Read in data. 
+
+data.all<- read.csv( file = 'Exam PA Tempe ALS Data.csv',colClasses = c15)
+
+```
+Task 1: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 2: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 3: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+
+Task 4:
+
+This task's given code should be run as is.
+Some candidate coding is required and there is a place for it at the end of the chunk.
+
+```{r}
+
+# Copy data to use for this task. 
+
+data.all.task4 <- data.all
+
+
+# CANDIDATE CODE  
+
+# Place your code here.
+
+```
+Task 5: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 6: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+
+Task 7:
+
+This task's given code should be run as is.
+No candidate coding required.
+
+
+```{r}
+
+# Copy data to use for this task. 
+
+data.all.task7 <- data.all
+
+# Your assistant's code cleans up turnout.time.
+
+# Remove observations where turnout.time is missing.
+
+data.all.task7 <- data.all.task7[!is.na(data.all.task7$turnout.time),]
+
+
+# Remove observations where turnout.time is negative or
+# greater than 600.
+
+data.all.task7 <- data.all.task7[(data.all.task7$turnout.time >= 0) & (data.all.task7$turnout.time<=600),]
+
+
+# Create a GLM model. 
+# Use Gaussian distribution family and log link function.
+
+data.all.task7$turnout.time.1 = data.all.task7$turnout.time + 0.1
+model7 = glm(turnout.time.1 ~   month + hour + weekday.number + temp.f + dewpoint + 
+             issue + vehicle + station
+         , data = data.all.task7
+         , family=gaussian(link='log'))
+
+summary(model7)
+
+```
+Task 8: 
+
+This task's given code should be run as is.
+
+No candidate coding is required.
+
+```{r}
+library(ggplot2)
+library(caret)
+
+# Copy data to use for this task. 
+
+data.all.task8 <- data.all
+
+
+# Make hour ordered.
+data.all.task8$hour <- ordered(data.all.task8$hour, levels=c(as.character(0:23)))
+
+# Remove negative times.
+data.all.task8 <- data.all.task8[data.all.task8$alarm.processing.time >= 0,]
+data.all.task8 <- data.all.task8[data.all.task8$turnout.time >= 0,]
+data.all.task8 <- data.all.task8[data.all.task8$travel.time >= 0,]
+  
+# Remove missing times
+data.all.task8 <- data.all.task8[!is.na(data.all.task8$response.time),]
+data.all.task8 <- data.all.task8[!is.na(data.all.task8$travel.time),]
+data.all.task8 <- data.all.task8[!is.na(data.all.task8$turnout.time),]
+data.all.task8 <- data.all.task8[!is.na(data.all.task8$alarm.processing.time),]
+
+# Create a GLM to model whether the city meets its goal.
+# This will be used in parts a, b, and c of this task.
+
+# First create the response variable.
+data.all.task8$meet.goal <- ifelse(data.all.task8$response.time <= 360, 1, 0)
+
+# Create a variable that indicates weekend or not.
+data.all.task8$week.end <- ifelse(data.all.task8$weekday.number %in% c("1", "7"), 1, 0)
+
+# Create a variable that indicates morning or not.
+data.all.task8$AM <- ifelse(data.all.task8$min.past.midnight < 720, 1, 0)
+
+# Relevel the vehicle variable.
+data.all.task8$vehicle <- relevel(data.all.task8$vehicle, ref = "E")
+
+# Split the data into Train & Test portions.
+set.seed(100)
+train_rows <- createDataPartition(data.all.task8$meet.goal,  p = 0.8, list = FALSE)
+df_train <- data.all.task8[train_rows,]
+df_test  <- data.all.task8[-train_rows,]
+
+# Define and fit the GLM
+formula.glm8abc <- as.formula("meet.goal ~ dewpoint + temp.c + station + week.end + AM + vehicle") 
+model.glm8abc <- glm(formula.glm8abc, data = df_train, family = "binomial")
+
+# Look at the output.
+summary(model.glm8abc)
+
+# Run drop1 for the model.
+drop1(model.glm8abc)
+
+# The code below is for part d 
+
+# Create new variables.
+
+df_train$wealthy <- ifelse(df_train$station %in% c("4", "5", "6", "7"), 1, 0)
+df_train$college <- ifelse(df_train$station == "6", 1, 0)
+
+
+formula.glm8d <- as.formula("meet.goal ~ dewpoint + temp.c + week.end + wealthy + college + AM") 
+model.glm8d <- glm(formula.glm8d, data = df_train, family = "binomial")
+summary(model.glm8d)
+
+
+```
+Task 9: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 10: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 11: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 12: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 13: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+
+

@@ -1,0 +1,496 @@
+---
+title: "Principal Component Analysis"
+format: beamer
+editor: visual
+---
+
+# What it does?
+
+# How does it do it?
+
+# PCA in a view or coordinate rotation
+
+```{r}
+# Get some fake data here
+library(tidyverse)
+library(ggplot2)
+library(factoextra)
+library(tidyverse) # data manipulation and visualization
+library(gridExtra)
+
+
+n =  10
+
+x = sample(1:n, replace = TRUE, n)+rnorm(mean = 0, sd = .5, n)
+y = x + rnorm(mean=0, sd = 5, n)
+
+var_x = var(x)
+var_y = var(y)
+var_total = var_x+var_y
+
+d1 = as_tibble(data.frame(
+     x1 = x, 
+     x2 = y))
+ggplot(data = d1, aes(x = x, y=y))+
+  geom_point()
+```
+
+#
+
+```{r}
+res.pca <- prcomp(d1)
+res.pca
+get_eig(res.pca)
+```
+
+#
+
+```{r}
+fviz_eig(res.pca, addlabels = TRUE)
+```
+
+-   We notice that there are some information of salary in income
+-   Could we combine this
+
+# Another perspective of PCA
+
+-   Consider $n$ points of data. We look for a direction where the projections of these points to it give the maximum variance.
+
+-   Projection of a point onto a direction (vector).
+
+-   A point is presented by a pair of number $(3,4)$. A vector/direction is also presented by a pair of number: x-axis presented by $(1,0)$ and y-axis presented by $(0,1)$. A vector/direction of $(a,b)$ could be a point connecting the origin $(0,0)$ and the point $(a,b)$.
+
+-   A projection of a point $(x_0, y_0)$ onto a vector $(a,b)$ is a number (scalar), it is the dot product of the two pair or
+
+$$
+ax_0 + by_0
+$$ - A vector also presents a subspace of one dimension. So we project a point of two dimension onto a subspace of one dimension, the projection should have only one number.
+
+# PCA as projections onto subspace
+
+-   If we have $n$ points to a vector (one dimensional subspace), we will receive n numbers. Thus, a data of $n$ points in two dimension (a pair), presented by a matrix, will turn into $n$ numbers. So we can say that a matrix of $n \times 2$, projected onto a vector will be $n$ numbers ($n$ points in one dimensional subspace).
+
+-   So, $n$ points projects onto a vector becomes $n$ numbers. We want to find a vector/subspace that maximize the variance of this points. What is the variance of points. If the points have zero means, the variance is the length of the $n$ points.
+
+-   Language of subspace and projection and the language of statistics. We should discuss this using one language only.
+
+# Projection of a point to a direction
+
+-   For simplicity, we first consider 2 dimension first
+
+-   Both a point A and a vector OA (O is the origin) is presented by a column vector.
+
+-   The projection of a point A, presented by a column vector $b = [b_1, b_2]^T$ onto a vector through the origin, also presented by a column vector, $a = [a_1, a_2]^T$ (or the span of this vector which is a 1-dimensional subspace) is
+
+$$
+\frac{aa^T}{a^Ta}b
+$$,
+
+# Projection of a point to a direction
+
+-   $P=\frac{aa^T}{a^Ta}$ is called a projection matrix.
+
+![](images/pca1.png){width="241"}
+
+-   For example, the projection of a point $x = \begin{bmatrix} 1 \\ 3 \end{bmatrix}$ onto a direction of $v = [3, 2]^T$ (or onto span(v)) is
+
+$$
+\frac{vv^T}{v^Tv}x = \begin{bmatrix}
+   2.076923  \\ 1.384615
+  \end{bmatrix}
+$$ - We usually consider the direction vector of length 1.
+
+# Checking
+
+-   Checking only.
+
+# What does the $v^Tx$ present?
+
+-   Sometime, the projection of a point $x = \begin{bmatrix} 1 \\ 3 \end{bmatrix}$ onto $span(v)$ where $\|v\| = 1$ can be presented by a dot product $x^Tv$.
+
+-   This product is the length of the projected vector, which is also the coordinate of the projected point in a new axis $v$.
+
+-   This is because $$
+    u = \frac{vv^T}{v^Tv}x = v\frac{v^Tx}{v^Tv} = vv^Tx \
+    \implies \|u\| = \|v\|v^Tx = v^Tx
+    $$ as $v^Tv = \|v\|^2=1$.
+
+# Projections of $n$ points to a direction
+
+-   The projection of vector $x$ onto $v$ is $x^Tv$
+
+-   The projection $n$ points $X = \begin{bmatrix} x_1^T \\ x_2^T\\..\\x_n^T \end{bmatrix}$ ($X$ is a $n \times 2$ matrix) is $Xv=\begin{bmatrix} x_1^Tv \\ x_2^Tv\\..\\x_n^Tv \end{bmatrix}$, which is a $n \times 1$ matrix.
+
+-   We can say that $n$ points $x_1^T, x_2^T,..., x_n^T$ in $R^2$ are transformed to $n$ points $x_1^Tv, x_2^Tv,..., x_n^Tv$ in $R^1$.
+
+# Variance and Total Variance
+
+-   In one dimension, the variance of $n$ points/numbers $a_1, a_2,..., a_n$ is $\frac{1}{n-1} \sum (a_i - \bar{a})^2$. If $a$ is center, $\bar{a}=0$, then the variance is $\frac{1}{n-1} \sum a_i^2 = \frac{1}{n-1} \|a\|^2 = \frac{1}{n-1}a^Ta$.
+
+-   Let $X$ be an $n \times 2$ data matrix. Let's X be centralized, which means both two columns have zero means. The projection of $X$ onto $v$, $Xv$ also has zero mean. Thus, the variance of the projection $Xv$ is $\frac{1}{n-1} \|Xv\|^2$.
+
+-   The total variance of the data is the sum of the variance of the projection onto the x-axis (var(x)) and the variance of the projection onto y-axis (var(y)).
+
+-   If we rotate the xy axis into uv axis, the total variance does not change, var(u) + var(v) = var(x) + var(y)
+
+-   PC1 is the direction that has the maximum variance of the data.
+
+# Demonstration
+
+```{r}
+projected_variance <- function(X, v)
+  # calculate the variance of the projected data vectors X on vector v
+  # X a n x p matrix
+  # v is p x 1 vector
+{
+  v = v/(sqrt(sum(v^2)))
+  X = as.matrix(X)
+  X = scale(X, scale = FALSE)
+  p = X%*%v
+  sum((p)^2)/(nrow(X)-1)    
+}
+```
+
+```{r}
+pca_plot = function(X, v)
+{
+  v1=v
+  v = v/(sqrt(sum(v^2)))
+  X = data.frame(X)
+  X = as.matrix(X)
+  # Projection matrix
+  P = v%*%t(v)/(t(v)%*%v)[1]
+  
+  
+  p1 = P%*%X[1,]
+  
+  # Projected points
+  PX = t(P%*%t(X))
+  PX = as_tibble(PX)
+  
+  dd = as_tibble(cbind(X, PX))
+  
+  pp = ggplot(data = dd)+
+    geom_point(aes(x=x, y=y))+
+    geom_segment(aes(x = 0, y = 0, xend = 15*v[1], yend = 15*v[2]))+
+    geom_point(aes(x=V1, y=V2),  color ='red')+
+    geom_segment(aes(x = x, y = y, xend = V1, yend = V2), linetype=2)+
+    geom_text(x = 9, y=9, label = paste("Variance:", round(projected_variance(X,v),5)))+
+    labs(title = paste("Variance:", round(projected_variance(X,v),5)),
+         subtitle = paste0("Direction vector: [", v1[1],",", v1[2],"]"))+
+    #xlim(min(X[,1]),max(X[,1]))+
+    #ylim(min(X[,2]),max(X[,2]))+
+    coord_fixed()
+print(pp)
+
+}
+```
+
+```{r}
+# Total variance is a constant
+# Rotation does not change the total variance
+vx= 0
+vy = 1
+v = c(vx,vy) 
+
+set.seed(2023)
+
+x = sample(1:n, replace = TRUE, n)+rnorm(mean = 0, sd = .5, n)
+y = x + abs(rnorm(mean=0, sd = 5, n))
+
+# x = c(1,1)
+# y = c(3,3)
+d <- data.frame(x = x, y=y)
+
+
+projected_variance(d, v) + projected_variance(d, c(-vy, vx))
+
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,0))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,0.1))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,0.2))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,0.3))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,0.4))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,0.5))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,0.6))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,0.7))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,0.8))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,0.9))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,1))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,1.1))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,1.2))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,1.3))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,1.4))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,1.5))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,1.6))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,1.7))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,1.8))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,1.9))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,2))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,3))
+```
+
+# 
+
+```{r}
+n = 10
+
+library(tidyverse)
+library(ggplot2)
+
+
+pca_plot(d, c(1,4))
+```
+
+# 
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+
+prin = prcomp(d)
+pca_plot(d, prin$rotation[,1])
+
+```

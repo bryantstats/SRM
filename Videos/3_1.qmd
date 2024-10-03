@@ -1,0 +1,300 @@
+---
+title: "Generalized Linear Models"
+format: beamer
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Part 1. GLM in General
+\end{center}
+```
+# Linear Model
+
+$$
+\mu = E(y) = \beta_0 + \beta_1x_1+...+\beta_px_p 
+$$
+
+-   The response follows normal distribution
+
+-   The relation between the response and the predictors is linear
+
+# Generalized Linear Model
+
+$$
+g(\mu) = \beta_0 + \beta_1x_1+...+\beta_px_p = x'\beta 
+$$
+
+-   The response $y$ follows a distribution in the linear exponential distribution (LED) family
+
+-   The relation between the response and the predictors defined by the link function $g(\cdot)$
+
+# Linear Exponential Distribution
+
+$$
+f(y;\theta, \phi) = exp\bigg[\frac{y\theta-b(\theta)}{\phi}+S(y,\phi)\bigg]
+$$
+
+-   Examples: Normal, Binomial, Negative Binomial, Poisson, Gamma Distribution, Inverse Gamma.
+
+-   The mean and the variance of the distribution are as follows. $$E(y) = b'(\theta)$$ $$Var(y) = \phi b^{''}(\theta)$$
+
+# Prameter Estimation
+
+-   Parameters of GLM is $\beta = [\beta_0, \beta_1,...\beta_p]$
+-   $\beta$ can be estimated using the Maximum Likelihood Method
+
+# MLE
+
+-   Given any data set $(x_1, y_1),(x_2, y_2), . . .(x_n, y_n)$ the probability of seeing that data is
+
+$$
+L(\beta) = f(y_1)\cdot f(y_2)\cdot \cdot \cdot f(y_n)
+$$
+
+# Case 1: Linear Model
+
+With $E(y) = \mu$
+
+$$
+g(\mu) =  \mu = \beta_0 + \beta_1x
+$$
+
+We assume that $Y \sim N(\mu, \sigma^2).$ Let $\epsilon = y - \beta_0 + \beta_1x$. We have $\epsilon \sim N(0, \sigma^2).$ Therefore $$
+y = \beta_0 + \beta_1x + \epsilon.
+$$ We see that this is how we define linear model earlier.
+
+# Likelihood Function
+
+```{=tex}
+\begin{align*}
+\prod f(y_i) &= \prod \frac{1}{\sigma\sqrt{2\pi}}e^{\frac{(y_i-\mu_i)^2}{2\sigma^2}} \\
+&= \prod\frac{1}{\sigma\sqrt{2\pi}}e^{\frac{(y_i-\beta_0-\beta_1x_i)^2}{2\sigma^2}}
+\end{align*}
+```
+-   The parameters $\beta_0$ and $\beta_1$ that maximizing the likelihood function are the same as the OLS estimators.
+
+# Case 2: Logistic Regression
+
+```{=tex}
+\begin{equation}
+g(\mu) = log\bigg(\frac{\mu}{1-\mu}\bigg)= \beta_0 + \beta_1x,
+\end{equation}
+```
+where $Y \sim Bernoulli(p)$, which has the following density distribution $$
+f(y) = p^y(1-p)^{1-y}
+$$ Notice that $\mu = E(y) = p$. Thus, from (1) \begin{align*}
+\mu &= \frac{1}{1 - e ^{-\beta_0-\beta_1x}} \\
+\implies p &= \frac{1}{1 - e^{-\beta_0-\beta_1x}}
+\end{align*}
+
+That's why logistic regression is also modeled the probability of $Y=1.$
+
+# Log-Likelihood Function
+
+We have \begin{align*}
+f(y)&= p^{y}(1-p)^{1-y}\\
+\implies \log f(y_i) &= \log p_i^{y_i}(1-p_i)^{1-y_i} \\
+ &= y_i \log p_i + (1-y_i) \log(1-p_i) \\
+ &= \log(1-p_i) + y_i \log \frac{p_i}{1-p_i}\\
+ &= -\log(e^{\beta_0+\beta_1x}+1)+y_i(\beta_0+\beta_1x)\\
+ \\
+ \implies \sum \log f(y_i) &= \sum -\log(e^{\beta_0+\beta_1x}+1)+ \sum  y_i(\beta_0+\beta_1x)
+\end{align*}
+
+-   We differentiate the log likelihood with respect to the parameters and solve for them equal to zero.
+-   There is no close-form solution. We need to soleve for it numerically.
+
+# Example 1
+
+```{r}
+library(tidyverse)
+#library(kableExtra)
+library(jtools)
+library(haven)
+library(knitr)
+mydata = read_dta('binary.dta')
+mydata = mydata %>% select(-rank)
+kable(mydata)
+mylogit <- glm(admit ~ gre + gpa, data = mydata, family = "binomial")
+mylogit
+```
+
+# 
+
+```{r}
+summ(mylogit, model.info = getOption("summ-model.info", FALSE),
+  model.fit = getOption("summ-model.fit", FALSE)
+)
+```
+
+$$
+P(admit = 1) = \frac{1}{1-e^{-4.949378 + 0.002691\cdot gre - 0.754687\cdot gpa}}
+$$
+
+# Coefficients
+
+-   The positive coefficient of gpa indicates that increasing gpa will increase the chance of being admitted.
+
+-   The same for the gre scores
+
+# 
+
+```{r}
+mydata$predicted_prob = predict(mylogit, mydata, type="response")
+kable(mydata)
+```
+
+# Example 2
+
+```{r}
+library(tidyverse)
+library(knitr)
+mydata = read_csv('insurance_data.csv')
+kable(mydata)
+mylogit <- glm(bought_insurance ~ age + income, data = mydata, family = "binomial")
+mylogit
+```
+
+# 
+
+```{r}
+summ(mylogit, model.info = getOption("summ-model.info", FALSE),
+  model.fit = getOption("summ-model.fit", FALSE)
+)
+```
+
+# 
+
+```{r}
+mydata$predicted_prob = predict(mylogit, mydata, type="response")
+kable(mydata)
+```
+
+# Case 3. Probit Regression
+
+$Y \sim Bernoulli(p)$ \begin{align*}
+g(\mu) &= \phi^{-1}(\mu) = \beta_0 + \beta_1x \\
+\iff \mu &= \phi(\beta_0+\beta_1x),
+\end{align*} where $\phi(z) = \frac{1}{2\pi}\int_{-\infty}^{z}e^{-\frac{u^2}{2}}du$ is the CDF of the standard normal distribution.
+
+# 
+
+```{r}
+library(tidyverse)
+library(knitr)
+mydata = read_csv('insurance_data.csv')
+kable(mydata)
+mylogit <- glm(bought_insurance ~ age + income, data = mydata, family = binomial(link = "probit"))
+```
+
+# 
+
+```{r}
+summ(mylogit, model.info = getOption("summ-model.info", FALSE),
+  model.fit = getOption("summ-model.fit", FALSE)
+)
+```
+
+# 
+
+```{r}
+mydata$predicted_prob = predict(mylogit, mydata, type="response")
+kable(mydata)
+```
+
+# Case 4. Poisson Regression
+
+$$
+\log(\mu) = \beta_0 + \beta_1x
+$$ where $Y \sim Poisson(\mu)$
+
+# 
+
+We have \begin{align*}
+f(y) &=\frac{e^{-\mu}\mu^y}{y!}\\
+\implies \log f(y) &= \mu+y\log \mu\log(y!)\\
+&= e^{\beta_0+\beta_1x} + y(\beta_0+\beta_1x) - \log(y!)\\
+\\
+\implies \sum \log f(y_i) &= \sum e^{\beta_0+\beta_1x_i} + y_i(\beta_0+\beta_1x_i) - \log(y_i!)
+\end{align*}
+
+-   As logistic regression, we need to solve for the derivative equalling zeros using numerical methods.
+
+# Example: Predicting Insurance Claims
+
+-   ClaimNb Number of claims during the exposure period.
+-   Exposure The period of exposure for a policy, in years.
+-   Power The power of the car (ordered categorical).
+-   CarAge The vehicle age, in years.
+-   DriverAge The driver age, in years (in France, people can drive a car at 18).
+-   Brand The car brand divided in the following groups: A- Renaut Nissan and Citroen, B- Volkswagen, Audi, - Skoda and Seat, C- Opel, General Motors and Ford, D- Fiat, E- Mercedes Chrysler and BMW, F- Japanese (except Nissan) and Korean, G- other.
+-   Gas The car gas, Diesel or regular.
+-   Region The policy region in France (based on the 1970-2015 classification).
+-   Density The density of inhabitants (number of inhabitants per km2) in the city the driver of the car lives in.
+
+# Model
+
+```{r, eval=FALSE}
+library(CASdatasets)
+data(freMTPLfreq)
+d = as_tibble(freMTPLfreq) %>% 
+  select(-PolicyID, -Region, -Brand, -Power) %>% 
+  group_by(ClaimNb) %>% 
+  sample_n(size=1000, replace = TRUE)
+mdl = glm(ClaimNb  ~. , data = d, family = poisson(link = "log"))
+summ(mdl, model.info = getOption("summ-model.info", FALSE),
+  model.fit = getOption("summ-model.fit", FALSE)
+)
+```
+
+# Prediction
+
+```{r, eval=FALSE}
+d$predicted_claims = predict(mdl, d, type = 'response')
+
+d%>% 
+  group_by(ClaimNb) %>% 
+  sample_n(size=2, replace = TRUE) %>% 
+  kable()
+```
+
+# Deviance
+
+-   Deviance
+
+$$D = \phi \cdot 2(l_{SAT}-l)$$
+
+-   $l$ is the loglikelihood of the data using the model. This is calculated by replacing $\mu_i$ by $\hat{\mu_i}$ in the loglikelihood function.
+
+-   $l_{SAT}$ is the loglikelihood of the *perfect* model. This is calculated by replacing $\mu_i$ by $y_i$ (thus, perfect prediction) in the loglikelihood function.
+
+-   $\phi$ is the scale parameter in the distribution of the response. For logistic regression and Posisson regression $\phi =1$ and for linear model, $\phi = \sigma^2$
+
+# Deviance of Linear Model
+
+-   $D = \sum(y_i - \hat{\mu_i})^2$
+
+# Deviance of Logistic Regression
+
+# Deviance of Poisson Regression
+
+$$
+D = 2 \sum \bigg[ y_i \ln\bigg(\frac{y_i}{\hat{\mu_i}}\bigg) - (y_i-\hat{\mu_i})\bigg]
+$$
+
+# Example
+
+# Full Model vs. Reduced Model
+
+-   $H_0: \beta_1=\beta_2=\beta_3=0$ (Reduced Model)
+-   $H_{\alpha}: H_0$ is false. (Full Model)
+-   $LRT = 2(l_1-l_0) \sim \chi_{3, \alpha}$ where $l_1$ and $l_0$ are the maximum likelihood of the two models.
+
+# Example

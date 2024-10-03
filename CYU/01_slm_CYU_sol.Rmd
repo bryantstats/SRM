@@ -1,0 +1,51 @@
+---
+title: "Week 1 - Check Your Understanding"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. In simple linear regression, both the response and the predictor are usually assumed to be random variables.
+
+    - a. True
+    - *b. False
+
+2. The variance of the response and the error are both assumed to be constant (does not depend on the predictors) and equal to $\sigma^2$. 
+
+    - *a. True
+    - b. False
+
+3. The least squared method is the only way to determine the parameters $\beta_{0}$ and $\beta_1$
+
+    - a. True
+    - *b. False
+
+4. In the least square method, $\hat{\beta_0}$ and $\hat{\beta_1}$ minimizes
+
+    - *a. The sum of all square errors
+    - b. The sum of all absolute errors. 
+
+5. The total sum of squares is always greater than the Regression sum squares.
+    
+    - *a. True
+    - b. False
+
+6. The coefficient of determination can not be greater than 1.
+
+    - *a. True
+    - b. False
+
+7. The hypothesis that there is no linear relationship between the response and the predictor is equivalent to
+
+    - *a. $H_{0}: \beta_1 \neq 0$
+    - b. $H_{0}: \beta_0 \neq 0$
+
+8. We can use both the t-test and F-test to test for $H_{0}: \beta_1 = 0$ vs. $H_{\alpha}: \beta_1 \neq 0$
+  
+    - *a. True
+    - b. False

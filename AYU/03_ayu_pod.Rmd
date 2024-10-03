@@ -1,0 +1,106 @@
+
+---
+title: "Week 3 - AYU - Pod"
+output:
+  word_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: united
+---
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+![](1.jpg)
+
+## GLM in R
+
+```{r}
+library(tidyverse)
+d <- read_csv("data/TermLife.csv")
+d <- d[d$FACE>0, ]
+modelMLR <- glm(FACE ~ EDUCATION+NUMHH+INCOME, data=d)
+summary(modelMLR)
+```
+
+## Logistic Regression
+
+We will use the [Wisconsin Hospital Data] again for this example. In the data, our response variable is the total charge, which is a numeric variable, so we cannot use logistic regression for this variable. We will create a binary variable from the total charge.  Instead of the exact charge, we are interested in the charge is small (less than the median) or large (more than the median). Create a variable `TOTCHG2` that takes the below value
+
+- `small` if `TOTCHG` is smaller than the average of `TOTCHG`
+- `large` otherwise
+
+```{r}
+library(tidyverse)
+d <- read_csv('data/frees/HospitalCosts.csv')
+d$TOTCHG2 = ifelse(d$TOTCHG > median(d$TOTCHG), 1, 0)
+```
+
+Now that `TOTCHG2` is binary, we can regress it using the logistic regression. 
+
+```{r}
+model <- glm(TOTCHG2 ~ AGE + factor(GENDER)  + LOS  + factor(RACE) + APRDRG, data=d, family = binomial(link = 'logit'))
+summary(model)
+```
+
+
+### Prediction
+
+Find the probability that a person get charged a `large` amount. 
+
+```{r}
+predict(model, list(AGE = 15, GENDER = 1,  LOS = 1, RACE = 1, APRDRG = 600), type = 'response')
+```
+
+```{r}
+# Checking the accuracy of the model
+
+predicted_value = ifelse(predict(model, d , type = 'response')>=.5, 1, 0)
+true_value = d$TOTCHG2
+library(caret)
+confusion_matrix = confusionMatrix(data=factor(predicted_value), reference = factor(true_value))
+confusion_matrix
+```
+
+## Poisson Regression 
+
+```{r}
+p = read_csv('data/poisson_sim.csv')
+p$prog <- factor(p$prog, levels=1:3, labels=c("General", "Academic", 
+                                                     "Vocational"))
+summary(m1 <- glm(num_awards ~ prog + math, family="poisson", data=p))
+```
+```{r}
+
+d <- read_csv('data/poisson_sim.csv')
+
+model = glm(num_awards ~ factor(prog) + math, data = d, family = 'poisson')
+summary(model)
+
+# Coefficients
+
+exp(coef(model))
+
+# Goodness-of-fit test
+gof.pvalue = 1 - pchisq(model$deviance, model$df.residual)
+gof.pvalue
+```
+
+## Questions
+
+1. With your group find datasets that suitable for logistic regression to
+
+-  Specify the response variable and the input variables to build logistic regression. 
+-  Compute the confusion matrix and report the accuracy of the model
+
+2. With your group find datasets that suitable for poisson regression to
+
+-  Specify the response variable and the input variables to build poisson regression. 
+-  Evaluate the quality of the poisson model. 

@@ -1,0 +1,208 @@
+---
+title: "AYU - Individual Week 4"
+format: 
+  html:
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE)
+```
+
+*Watch the videos to see how the similar problems are solve.*
+
+## Random Walks
+
+#### Problem 1 (SRM Sample - Question 4)
+
+You are given:
+
+i) The random walk model 
+
+$$
+y_t =  y_0 + c_1 + c_2 + c_3 +...+c_t,
+$$
+
+where $c_i, (i = 1, 2,..., t)$ denote observations from a white noise process. 
+
+ii) The following ten observed values of $c_t$: 
+
+| t     | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10|
+|:-------|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|
+| $y_t$ | 2  | 5  | 10  | 13  | 18  | 20  | 24  |25| 27  | 30  |
+
+
+iii) $y_0 = 0$
+
+Calculate the standard error of the 9 step-ahead forecast, $\hat{y}_{19}$ .
+
+(A) 4/3
+(B) 4
+(C) 9
+(D) 12
+(E) 16 
+
+```{r}
+
+```
+
+
+#### Problem 2 (SRM Sample - Question 55)
+
+You are given the following eight observations from a time series that follows a
+random walk model: 
+
+| $t$     | 0  | 1  | 2  | 3  | 4   | 5   | 6   | 7   |
+|:--------|:---|:---|:---|:---|:----|:----|:----|:----|
+| $y_t$ | 3  | 5  | 7  | 8  | 12  | 15  | 21  | 22  |
+
+
+You plan to fit this model to the first five observations and then evaluate it against the
+last three observations using one-step forecast residuals. The estimated mean of the white
+noise process is 2.25.
+
+Let F be the mean error (ME) of the three predicted observations.
+
+Let G be the mean square error (MSE) of the three predicted observations.
+
+Calculate the absolute difference between F and G, $F-G$
+
+(A) 3.48
+(B) 4.31
+(C) 5.54
+(D) 6.47
+(E) 7.63 
+
+
+## Autoregressive
+
+#### Problem 3 
+
+A stationary autoregressive model of order one can be written as
+
+$$y_t = \beta_0 + \beta_1y_{t-1} + \epsilon, t =  1, 2,...$$
+
+Determine which of the following statements about this model is false
+
+(A) The parameter $\beta_0$ must not equal 1.
+(B) If the parameter $\beta_1 = 0$, then the model reduces to a white noise process.
+(C) If the parameter $\beta_1 = 1$, then the model is a random walk.
+
+
+#### Problem 4 (SRM Sample - Question 64)
+
+You are given a stationary AR(1) model, 
+
+$$
+y_t = \beta_0 + \beta_1 y_{t-1} + \epsilon_t, t = 1, 2,..., T.
+$$
+
+Determine which or the following is always true.
+
+(A) $\beta_0 \neq 0$
+(B) $\beta_0 = 1$
+(C) $\beta_1 = 0$
+(D) $\beta_1 = 1$
+(E) $|\beta_1| < 1$
+
+
+#### Problem 5 (Parameter Estimation)
+
+You are given the following six observed values of the autoregressive model of order one time series
+
+$$
+y_t = \beta_0 + \beta_1 y_{t-1} + \epsilon_t, \text{ with   }  Var(\epsilon_t) = \sigma^2.
+$$
+
+| $t$   | 1   | 2   | 3   | 4   | 
+|:------|:----|:----|:----|:----|
+| $y_t$ | 1   | 3   | 5   | 8   |
+
+Calculate $\hat{\beta}_0$ and $\hat{\beta}_1$ using the conditional least squares method.
+
+#### Problem 6 (SRM Sample - Question 58)
+
+You are given the following six observed values of the autoregressive model of
+order one time series 
+
+$$
+y_t = \beta_0 + \beta_1 y_{t-1} + \epsilon_t, \text{ with   }  Var(\epsilon_t) = \sigma^2.
+$$
+
+| $t$  | 1  | 2  | 3  | 4  | 5   | 6  |
+|:-----|:---|:---|:---|:---|:----|:---|
+| $y_t$| 31 | 35 | 37 | 41 | 45  | 51 |
+
+
+The approximation to the conditional least squares method is used to estimate $\beta_0$
+and $\beta_1$
+
+Calculate the mean squared error $s^2$ that estimates $\sigma^2$
+
+(A) 13
+(B) 21
+(C) 22
+(D) 26
+(E) 35 
+
+#### Problem 7 (Forecasting with AR(1))
+
+You are given an AR(1) with known parameters as follows.
+
+\begin{align*}
+y_t &= .6y_{t-1} -5 + \epsilon \\
+y_T &= 7
+\end{align*}
+
+Calculate the three step ahead forecast of $y_{T+5}$
+
+
+## Smoothing
+
+#### Problem 8
+
+You are given the following time series
+
+| $t$   | 1   | 2   | 3   | 4   | 5   |
+|:------|:----|:----|:----|:----|:----|
+| $y_t$ | 1   | 3   | 5   | 8   | 13  |
+
+Forecasting $y_{6}$ using smoothing average with $k=2$
+
+
+#### Problem 9
+
+You are given the following time series
+
+| $t$   | 1   | 2   | 3   | 4   | 5   |
+|:------|:----|:----|:----|:----|:----|
+| $y_t$ | 1   | 3   | 5   | 8   | 13  |
+
+Forecasting $y_{6}$ using exponential smoothing with $w = .8$
+
+#### Problem 10 (SRM Sample - Question 46)
+
+A time series was observed at times 0, 1, …, 100. The last four observations along
+with estimates based on exponential and double exponential smoothing with $w =0.8$ are:
+
+| Time ($t$)                  | 97   | 98   | 99   | 100   |
+|:-----------------------------|:------|:------|:------|:-------|
+| Observation ($y_t$)        | 96.9 | 98.1 | 99.0 | 100.2 |
+| Estimates ($\hat{s}^(1)_t$) | 93.1 | 94.1 | 95.1 |       |
+| Estimates ($\hat{s}^(2)_t$)                  | 88.9 | 89.9 |      |       |
+
+All forecasts should be rounded to one decimal place and the trend should be rounded to
+three decimal places.
+
+Let F be the predicted value of $y_{102}$ using exponential smoothing with $w = 0.8$.
+
+Let G be the predicted value of $y_{102}$ using double exponential smoothing with $w = 0.8$.
+
+Calculate the absolute difference between F and G, $F-G$
+
+(A) 0.0
+(B) 2.1
+(C) 4.2
+(D) 6.3
+(E) 8.4 

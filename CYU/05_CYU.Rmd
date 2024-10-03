@@ -1,0 +1,64 @@
+---
+title: "Week 5 - Check Your Understanding"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Decision tree can only be used for categorical response
+    
+    a. True
+    b. False
+    
+2.  The prediction of a regression tree (quantitative response) are the mean of the response values of the observations in the associated node. 
+    
+    a. True
+    b. False
+
+3. The prediction of a classification tree (qualitative response) are the majority of the response values of the observations in the associated node.
+    
+    a. True
+    b. False
+
+4. Gini-Index is the only way to measure the impurity of a node in decision trees. 
+    
+    a. True
+    b. False
+
+5. Decision Trees split using Gini-Index are similar to trees split using entropy. 
+    
+    a. True
+    b. False
+
+6. Deeper/larger trees will have a higher training accuracy than the shallower trees.  
+
+    a. True
+    b. False
+    
+
+7. One wants to build a decision tree to detect if a patient has lung cancer.  One should use
+
+    a. Classification Tree
+    
+    b. Regression Tree
+        
+
+8. One wants to build a decision tree to predict salary.  One should use
+
+    a. Classification Tree
+    
+    b. Regression Tree
+
+9. Decision trees can achieve zeros training errors for any given data. 
+
+    a. True
+    b. False
+    
+
+
+    

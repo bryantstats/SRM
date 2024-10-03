@@ -1,0 +1,64 @@
+---
+title: "Week 2 - Check Your Understanding"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Multiple Linear Regression means
+
+    a. Multiple responses
+    
+    *b. Multiple predictors
+
+
+2. A statistician have data for the sales and the amount of money spent advertising on TV, the radio and in newspapers. She wants to build a model to predict the number of sales. Which one is a better approach?
+    
+    a. Run three separate simple linear regressions each of which uses a different advertising medium as a predictor.
+    
+    *b. Run a multiple linear model with three predictors are the amount of money spent advertising on TV, the radio and in newspapers.
+    
+3. In the multiple linear regression table that has no multicollinearity, a predictor with a small p-value (less than .05) indicates that the variable is not significant and should not be included in the model.
+
+    *a. True
+    
+    b. False
+
+4.  It is possible that a predictor is significant (p-value less than .05) in simple linear model but not significant (p-value greater than .05) in multiple linear model. 
+    
+    *a. True
+    
+    b. False
+
+5. In multiple linear regression, a predictor could be categorical.
+    
+    *a. True
+    
+    b. False
+
+6. To incorporate a categorical predictor with $r$ levels (i.e,. it has $r$ different categories), one needs to introduce $r-1$ dummy variables. 
+    
+    *a. True
+    
+    b. False
+
+7. In multiple linear model, we can test for the significant of a reduced model (using a subset of predictors) using 
+
+    a. t-test
+    
+    *b. F-test
+
+8. Including predictors in multiple linear model will always increase the $R^2$ of the model.
+    
+    *a. True
+    b. False
+    
+9. Multicollinearity in multiple linear model does not affect the predictive power of the model
+
+    *a. True
+    b. False

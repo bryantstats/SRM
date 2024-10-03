@@ -1,0 +1,61 @@
+---
+title: "Week 4 - Check Your Understanding"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Longitudinal data are data ordered by time while cross-sectional data are not. 
+    
+    *a. True
+    b. False
+    
+2. A time series can usually be decomposed into two components: Time trend component and and seasonal component. 
+
+    a. True
+    *b. False
+    
+3. Time series regression is to model $y_t$ as a polynomial function of the time $t$ and an error. 
+
+    *a. True
+    b. False
+
+4. A white-noise can be considered as an identically independently distributed from a specific distribution
+
+    *a. True
+    b. False
+
+5.  A stationary time series has the mean function change over time
+    
+    a. True
+    *b. False
+
+6. A stationary time series has a constant variance over time. 
+    
+    *a. True
+    b. False
+
+7. A white noise is a stationary time series.
+    
+    *a. True
+    b. False
+
+8. A random walk is always non-stationary.
+    
+    a. True
+    *b. False
+
+9. In simple moving average, the smaller the value $k$, the smoother the averages. 
+
+    a. True
+    *b. False
+
+10. Autoregression models of level 1, AR(1), includes both white-noise process and random walk process. 
+
+    *a. True
+    b. False

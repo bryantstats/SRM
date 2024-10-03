@@ -1,0 +1,98 @@
+---
+title: "Gradient Boosting Calculation"
+format: html
+editor: visual
+---
+
+
+### Problem
+Given the data.
+
+<center>
+
+| X | y | 
+|---|---|
+| 1 | 1 |
+| 2 | 0 |
+| 3 | 2 |
+
+</center>
+
+We will train a gradient boosted tree (stump) on this data with the learning rate of 1.
+
+  a. Calculate the prediction of the first round. 
+  
+  b. Calculate the target of the second round
+  
+  c. Suppose that the stump in the second round is: $X>2.5$. Calculate the predictions of this stump in the second round.
+  
+  d. Calculate the target of the third round. 
+  
+  e. Suppose that the stump in the third round is: $X>1.5$. Calculate the predictions of this stump in the second round.
+  
+  f. What are the final predictions of the gradient boosting model for $y$ in the training data after the third round? 
+
+## Solution
+a. The prediction of the first round (Pred1) is just the average of $y$ (Pred1 = $\bar{y}$).
+
+|    |   X |   Y |   Pred1 |
+|---:|----:|----:|--------:|
+|  0 |   1 |   1 |       1 |
+|  1 |   2 |   0 |       1 |
+|  2 |   3 |   2 |       1 |
+
+b. The target of the second round is the errors of the first round (e1 = Y - Pred1). 
+
+|    |   X |   Y |   Pred1 |   e1 |
+|---:|----:|----:|--------:|-----:|
+|  0 |   1 |   1 |       1 |    0 |
+|  1 |   2 |   0 |       1 |   -1 |
+|  2 |   3 |   2 |       1 |    1 |
+
+
+c. The second round predicts the errors of the first round ($e1$).
+
+Since the stump is $X>2.5$, we have the following predictions of the second round (Pred2)
+
+<center>
+![](gbp1.png)
+</center>
+
+Thus, we have the following table.
+
+|    |   X |   Y |   Pred1 |   e1 |   Pred2 |
+|---:|----:|----:|--------:|-----:|--------:|
+|  0 |   1 |   1 |       1 |    0 |    -0.5 |
+|  1 |   2 |   0 |       1 |   -1 |    -0.5 |
+|  2 |   3 |   2 |       1 |    1 |     1   |
+
+
+d. The target of the third round is the errors of the second rounds e2 = e1 - Pred2. 
+
+|    |   X |   Y |   Pred1 |   e1 |   Pred2 |   e2 |
+|---:|----:|----:|--------:|-----:|--------:|-----:|
+|  0 |   1 |   1 |       1 |    0 |    -0.5 |  0.5 |
+|  1 |   2 |   0 |       1 |   -1 |    -0.5 | -0.5 |
+|  2 |   3 |   2 |       1 |    1 |     1   |  0   |
+
+e. The third round predicts the errors of the second round. 
+
+<center>
+![](gbp2.png)
+</center>
+
+Thus, we have: 
+
+|    |   X |   Y |   Pred1 |   e1 |   Pred2 |   e2 |   Pred3 |
+|---:|----:|----:|--------:|-----:|--------:|-----:|--------:|
+|  0 |   1 |   1 |       1 |    0 |    -0.5 |  0.5 |    0.5  |
+|  1 |   2 |   0 |       1 |   -1 |    -0.5 | -0.5 |   -0.25 |
+|  2 |   3 |   2 |       1 |    1 |     1   |  0   |   -0.25 |
+
+f. The predictions of $y$ after the third round is the summation of the first round predictions, the second round predictions and the third round predictions (Pred_Final = Pred1+Pred2+Pred3).  Therefore, we have: 
+
+|    |   X |   Y |   Pred1 |   Pred2 |   Pred3 |   Pred_Final |
+|---:|----:|----:|--------:|--------:|--------:|-------------:|
+|  0 |   1 |   1 |       1 |    -0.5 |    0.5  |         1    |
+|  1 |   2 |   0 |       1 |    -0.5 |   -0.25 |         0.25 |
+|  2 |   3 |   2 |       1 |     1   |   -0.25 |         1.75 |

@@ -1,0 +1,59 @@
+---
+title: "Week 7 - Check Your Understanding"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. In classification, K-nearest neighbors (KNN) model predict based on the minority outcome/response of the K nearest neighbors
+    
+    a. True
+    b. False
+    
+2. To compute a prediction of 1NN for a new data point A, on a dataset with 100 data points, one needs to calculate how many distances?
+
+    a. A hundred distances from all the points to point A
+    b. One distance
+
+3. The larger the $k$ value in KNN models, the higher the train errors.
+    
+    a. True
+    b. False
+
+4. The prediction of KNN models with the same $k$ value still depends on the selection of distance measurement. 
+    
+    a. True
+    b. False
+
+5.  One should not standardize the data before building a KNN model.
+    
+    a. True
+    b. False
+
+6. In weighted KNN, the closer the neighbor, the higher the weights it has
+    
+    a. True
+    b. False
+
+7. KNN models with weighted distance and uniform distance should always produce the same prediction. 
+
+    a. True
+    
+    b. False
+
+8. KNN can be computationally expensive due to the amount of distance need to be calculated
+
+    a. True
+    b. False
+    
+
+9. KNN may not perform well in a higher dimension data due to the requirement of a large amount of data
+
+    a. True
+    b. False
+    

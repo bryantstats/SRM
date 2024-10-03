@@ -1,0 +1,237 @@
+
+---
+title: "Week 1 - AYU - Pod"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: united
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+*This document will help you install R, the most popular statistical programming language, and Rstudio, the most popular programming editor for R, into your computer. You will also learn about how R can be used as a powerful calculator and about how to import data and implement linear regression. Follow the section 1 to 3 to do the AYU Questions in section 4.* 
+
+---
+
+###### Question 1
+
+Install R and Rstudio
+
+*How to do it?*
+
+- Download R at [this link](https://cran.r-project.org/bin/windows/base/)
+
+- Download Rstudio at [this link](https://posit.co/download/rstudio-desktop/)
+
+- Install R
+
+- Install Rstudio
+
+---
+
+###### Question 2
+
+Run linear model on the following data
+
+| x | 2 | 3 | 5 | 6 | 1 | 9 |10| 15|
+|:---|:---|:---|:---|:---|:---|:---|:---|:---|
+| y | 1 | 4 | 6 | 4 | 4 | 3 |20|25|
+
+*How to do it?*
+
+- Open Rstudio
+- In the console, create two vectors $x$ and $y$ by typing in
+
+```{r}
+x = c(2,	3,	5,	6,	1,	9, 10, 15)
+y = c(1,	4,	6,	4,	4,	3, 20, 25)
+```
+
+- To regress $y$ on $x$ use the `lm` function
+
+```{r}
+my_linear_model = lm(y~x)
+```
+
+- To show the result use
+
+```{r}
+summary(my_linear_model)
+```
+
+
+## 1. Setup the enviroment 
+
+1. Download and Install R at: https://cran.r-project.org/bin/windows/base/R-4.2.3-win.exe
+
+2. Download and Install R-Studio at: https://download1.rstudio.org/electron/windows/RStudio-2023.03.0-386.exe
+
+## 2. Using R as a calculator
+
+### 2.1 Operate on one vector
+
+R can be used as a powerful calculator.  In this example, we will calculate summarized statistics for the following $x$ and $y$ inputs. 
+
+| $x$ | 1 | 2 |3 | 4 | 
+|:---|:---|:---|:---|:---|
+| $y$ | 1 | 5 | 2 | 6 |
+
+We first define these variables. Open Rstudio, in the console type: 
+
+```{r}
+x = c(1,2,3,4)
+y = c(3,5,2,6)
+```
+
+Two variables $x$ and $y$ can be seen as one dimensional vectors. We now can calculate $\sum x_i$ by `sum(x)`. Type `sum(x)` in the console.
+
+```{r}
+sum(x)
+```
+$\bar{x}$ can be calculated using `mean(x)`. Type `mean(x)` in the console. 
+
+```{r}
+mean(x)
+```
+
+Similarly, we have `median(x)` to calculate the median of $x$, `sd(x)` for the standard deviation and `var(x)` for the variance of $x$.
+
+```{r}
+median(x)
+sd(x)
+var(x)
+```
+R operates vectors on a element-wise manner. For example $x + 3$ will add 3 to all the element of $x$
+
+```{r}
+x + 3
+```
+Or $x^2$ will square all element of $x$
+
+```{r}
+x^2
+```
+### 2.2 Operate on two vectors
+
+As seen before, $x+y$ will add elements $x$ to elements of $y$ and similarly for multiplication (x*y) and division (x/y)
+
+```{r}
+x + y
+x*y
+x/y
+```
+We can compute $\sum x_i y_i$ by simply `sum(x*y)`
+
+```{r}
+sum(x*y)
+```
+
+The function `cor(x,y)` calculates the correlation of $x$ and $y$. 
+
+```{r}
+cor(x,y)
+```
+Apply your understanding by doing Question 3.  
+
+
+## 3. Simple Linear Regression
+
+### 3.1 Manually input data
+
+To run SLR in R we use the function `lm` as follows. 
+
+```{r}
+lm(y~x)
+```
+
+To obtain all the important information of the regression, use 
+
+```{r}
+summary(lm(y~x))
+```
+
+Apply your understanding by doing Question 3. 
+
+### 3.2 Outside Data
+
+To import a csv dataset into R, we do the follows, we will use the function `read_csv`. This function does not come with R but belongs to the `tidyverse` package. We first need to install this package.  Type the following into Rstudio console (You only need to install it one time)
+
+```{r, eval=FALSE}
+install.packages('tidyverse')
+```
+
+We are now ready to use `read_csv`` to import a dataset file.  There are two Possibilities. 
+
+- If the dataset file is on your computer say the data file `data.csv` at `C:\SRM\Data\data.csv`. We use
+
+```{r, eval=FALSE}
+library(tidyverse)
+d = read_csv('C:\\SRM\\Data\\data.csv')
+```
+
+Notice the double `\\` instead of `\`. There is a better practice to import data that we will use in later AYU assignments.  
+
+- If the dataset is on cloud, for example, the `Automobile Insurance Claims` dataset 
+ at the link: https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Regression%20Modeling/BookWebDec2010/CSVData/NAICExpense.csv
+
+```{r, warning=FALSE}
+library(tidyverse)
+d = read_csv('https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Regression%20Modeling/BookWebDec2010/CSVData/AutoClaims.csv')
+```
+
+You can use the function `View(d)` to view the data. 
+
+```{r, echo=FALSE, eval=FALSE}
+View(d)
+```
+
+The dataset is about claims experience from a large midwestern (US) property and casualty insurer
+for private passenger automobile insurance. Let's run regression of `PAID` on `AGE`.
+
+```{r}
+model <- lm(PAID~AGE, data = d)
+summary(model)
+```
+From the above result, we can write the equation of the best fitted line: $PAID =  1786.738 + 1.039AGE$. This model has a very low R-squared (almost zero). Let's use the model to predict the value of PAID when AGe are 20 and 40. 
+
+```{r}
+predict(model, list(AGE = c(20, 40)))
+```
+As can be seen, when the predictions of PAID are 1807.517 and 1828.296 respectively. 
+
+Apply your understanding by doing Question 3. 
+
+## 4. AYU - Question
+
+**Question 1. **
+
+Calculate the mean, standard deviation of $x$ and the correlation of $x$ and $y$. Given that
+
+| $x$ | 1 | 2 |-3 | -4 | 
+|:---|:---|:---|:---|:---|
+| $y$ | 1 | 5 | -2 | -6 |
+
+**Question 2. **
+
+Using the data in Question 1, find the slope, intercepts and the p-value of the F-test on the linear regression of $y$ on $x$. 
+
+**Question 3. **
+
+Import the Automobile UK Collision Claims dataset at
+
+https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Regression%20Modeling/BookWebDec2010/CSVData/AutoCollision.csv
+
+This dataset considered collision losses from private passenger United Kingdom (UK) automobile insurance policies. Run regression of `Claim_Count` on `Severity` and 
+
+1. Write the equation of the best fitted line
+2. What is the p-value of the test $H_0: \beta_1 = 0$ against $H_{\alpha}: \beta_1 \neq 0$
+3. Use the model to predict claim count when the Severity are 200, 250 and 300. 
+
+## 5. Submission
+
+- Address all the questions in a word document. Copy and paste the codes and the results of the code to the same word document. (Notice:  You will learn that this is not the best way to present your statistical analysis.  We will learn a more professional way to present it in the next Pod-AYU)

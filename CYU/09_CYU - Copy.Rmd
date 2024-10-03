@@ -1,0 +1,58 @@
+---
+title: "Week 6 - Check Your Understanding"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. 
+    
+    a. True
+    b. False
+    
+2. 
+
+    a. True
+    b. False
+
+3. 
+    
+    a. True
+    b. False
+
+4. 
+    
+    a. True
+    b. False
+
+5.  
+    
+    a. True
+    b. False
+
+6. 
+    
+    a. True
+    b. False
+
+7. 
+
+    a. True
+    b. False
+
+8. 
+
+    a. True
+    b. False
+    
+
+9. 
+
+    a. True
+    b. False
+    

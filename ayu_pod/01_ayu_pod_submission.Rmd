@@ -1,0 +1,88 @@
+
+---
+title: "Week 1 - Pod - Submission"
+output:
+  pdf_document:
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set()
+```
+
+## Question 1
+
+Given the following data
+
+| x   | 2   | 3   | 5   | 6   | 1   | 9   | 10  | 15  |
+|:----|:----|:----|:----|:----|:----|:----|:----|:----|
+| y   | 1   | 4   | 6   | 4   | 4   | 3   | 20  | 25  |
+
+a.  Calculate the mean, standard deviation, and variance of $x$
+b.  Calculate the correlation of $x$ and $y$
+c.  Run a linear model when regressing $y$ on $x$.
+
+```{r}
+
+```
+
+
+------------------------------------------------------------------------
+
+## Question 2*
+
+Given the following data
+
+| x   | 2   | 3   | 5   | 6   | 1   |
+|:----|:----|:----|:----|:----|:----|
+| y   | 1   | 4   | 6   | 4   | 4   |
+
+a.  Calculate the mean, standard deviation, and variance of $x$
+b.  Calculate the correlation of $x$ and $y$
+c.  Run a linear model when regressing $y$ on $x$.
+
+```{r}
+
+```
+
+------------------------------------------------------------------------
+
+## Question 3
+
+a.  Import in R the `Automobile UK Collision Claims` dataset at
+
+-   [Collision Claims](https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Regression%20Modeling/BookWebDec2010/CSVData/AutoCollision.csv) or [Alternative Link](data/AutoCollision.csv)
+
+b.  Use the View function to view the data
+
+
+```{r}
+
+```
+
+------------------------------------------------------------------------
+
+## Question 4
+
+Run linear regression to regress the `Claim_Count` on the `Severity`.  Give the summary of the model. 
+
+```{r}
+
+```
+
+------------------------------------------------------------------------
+
+## Question 5*
+
+In this question, we will use the `Automobile Insurance Claims` dataset at the below link:
+
+[Automobile Insurance Claims](https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Regression%20Modeling/BookWebDec2010/CSVData/NAICExpense.csv)
+
+a. Import the following dataset into Rstudio. 
+b. View the dataset. 
+c. Run linear model to regress `PAID` on `AGE`. Report the summary of this model. 
+
+```{r}
+
+```
+
+------------------------------------------------------------------------

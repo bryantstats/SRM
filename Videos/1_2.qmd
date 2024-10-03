@@ -1,0 +1,356 @@
+---
+title: "How well the line fit the data?"
+format: beamer
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# 
+
+-   Not every data can be fitted by a linear model
+
+-   We can measure a goodness of the fit in three ways
+
+-   Coefficient of Determination or $R^2$
+
+-   F-test
+
+-   t-test
+
+# Coefficient of Determination
+
+$$R^2 = \frac{Reg SS}{TSS} = 1- \frac{RSS}{TSS}$$
+
+-   RSS: Residual Sums Squares
+
+-   TSS: Total Sums Squares
+
+# 
+
+-   If $RSS = 0$, $R^2 = 1$. This is a perfect fit.
+
+-   If $RSS = TSS$, $R^2 = 0$ means. This is the lowest $R^2$ could be.
+
+-   The closer $R^2$ to 1, the better the fit.
+
+# 
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+x = c(1,2,3,4)
+y = c(1.1, 1.8, 2.7, 4.5)
+
+d1 = as_tibble(data.frame(
+     x = x, 
+     y = y))
+
+
+l1 <- lm(y ~ x)
+d1 = d1 %>%
+    bind_cols(
+        pred_sales = predict(l1, data = d1)
+    ) 
+
+p1 = d1 %>%
+    ggplot(aes(x = x)) +
+    geom_point(aes(y = y), color = "red") +
+  xlim(0,5)+
+  ylim(0,5)+
+  coord_fixed()
+
+p2 = d1 %>%
+    ggplot(aes(x = x)) +
+    geom_point(aes(y = y), color = "red") +
+    geom_abline(intercept = coef(l1)[1], slope = coef(l1)[2],
+                color = "blue", size = 1)+
+  xlim(0,5)+
+  ylim(0,5)+
+  coord_fixed()
+
+p3 = d1 %>%
+    ggplot(aes(x = x)) +
+    geom_linerange(aes(ymin = y, ymax = pred_sales)) +
+    geom_point(aes(y = y), color = "red") +
+    geom_abline(intercept = coef(l1)[1], slope = coef(l1)[2],
+                color = "blue", size = 1)+
+    geom_text(x = min(x)+.1, y = max(y) - .1, label = paste0("R2 = ", round(summary(l1)$r.squared, 2)))+
+  xlim(0,5)+
+  ylim(0,5)+
+  coord_fixed()
+    
+print(p1)
+```
+
+# 
+
+```{r}
+print(p2)
+```
+
+# 
+
+```{r}
+print(p3)
+```
+
+# 
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+x = c(1,2,3,4)
+y = c(1.1, 1.8, 2.7, 2)
+
+d1 = as_tibble(data.frame(
+     x = x, 
+     y = y))
+
+l1 <- lm(y ~ x)
+d1 = d1 %>%
+    bind_cols(
+        pred_sales = predict(l1, data = d1)
+    ) 
+
+p1 = d1 %>%
+    ggplot(aes(x = x)) +
+    geom_point(aes(y = y), color = "red") +
+  xlim(0,5)+
+  ylim(0,5)+
+  coord_fixed()
+
+p2 = d1 %>%
+    ggplot(aes(x = x)) +
+    geom_point(aes(y = y), color = "red") +
+    geom_abline(intercept = coef(l1)[1], slope = coef(l1)[2],
+                color = "blue", size = 1)+
+  xlim(0,5)+
+  ylim(0,5)+
+  coord_fixed()
+
+p3 = d1 %>%
+    ggplot(aes(x = x)) +
+    geom_linerange(aes(ymin = y, ymax = pred_sales)) +
+    geom_point(aes(y = y), color = "red") +
+    geom_abline(intercept = coef(l1)[1], slope = coef(l1)[2],
+                color = "blue", size = 1)+
+    geom_text(x = min(x)+.1, y = max(y) - .1, label = paste0("R2 = ", round(summary(l1)$r.squared, 2)))+
+  xlim(0,5)+
+  ylim(0,5)+
+  coord_fixed()
+    
+print(p1)
+```
+
+# 
+
+```{r}
+print(p2)
+```
+
+# 
+
+```{r}
+print(p3)
+```
+
+# 
+
+-   Some examples of $R^2$
+
+# F-test
+
+```{=tex}
+\begin{columns}[T]
+  \column{.49\textwidth}
+  
+  $H_0: \beta_1 = 0$
+  
+  $H_0: y = \beta_0 +  \epsilon$
+  
+  $H_0:$  The linear model is not a good fit
+  
+  
+  \column{.01\textwidth}
+  \rule{.1mm}{.3\textheight}
+
+  \column{.49\textwidth}
+  $H_{\alpha}: \beta_1 \neq 0$
+  
+  $H_{\alpha}: y = \beta_0 + \beta_1x + \epsilon$
+  
+  $H_{\alpha}:$  The linear model is a good fit
+  
+  
+\end{columns}
+```
+# 
+
+$$F = \frac{Reg SS}{RSS/(n-2)}$$
+
+# These are equivalent
+
+-   Larger F
+-   Larger Reg SS
+-   Smaller Residual SS (RSS)
+-   Smaller p-value
+-   More support for $H_{\alpha}$ or More useful the model
+
+# 
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+n=100
+set.seed(2023)
+x = runif(n, min = 0, max = 5)
+y = abs(sin(x)) + rnorm(n, mean =0, sd =.1)
+
+d1 = as_tibble(data.frame(
+     x = x, 
+     y = y))
+
+
+l1 <- lm(y ~ x)
+d1 = d1 %>%
+    bind_cols(
+        pred_sales = predict(l1, data = d1)
+    ) 
+
+p1 = d1 %>%
+    ggplot(aes(x = x)) +
+    geom_point(aes(y = y), color = "red") 
+
+p2 = d1 %>%
+    ggplot(aes(x = x)) +
+    geom_point(aes(y = y), color = "red") +
+    geom_abline(intercept = coef(l1)[1], slope = coef(l1)[2],
+                color = "blue", size = 1)
+
+
+p3 = d1 %>%
+    ggplot(aes(x = x)) +
+    geom_linerange(aes(ymin = y, ymax = pred_sales)) +
+    geom_point(aes(y = y), color = "red") +
+    geom_abline(intercept = coef(l1)[1], slope = coef(l1)[2],
+                color = "blue", size = 1)+
+    geom_text(x = min(x)+.1, y = max(y) - .1, label = paste0("R2 = ", round(summary(l1)$r.squared, 2)))+
+    geom_text(x = min(x)+.2, y = max(y) - .2, label = paste0("p-value = ", round(summary(l1)$coefficients[8], 2)))
+    
+
+print(p1)
+```
+
+# 
+
+```{r}
+print(p2)
+```
+
+# 
+
+```{r}
+print(p3)
+```
+
+# 
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+n=100
+x = runif(n, min = 0, max = 5)
+y = 2*x + rnorm(n, mean =0, sd = 1.5)
+
+d1 = as_tibble(data.frame(
+     x = x, 
+     y = y))
+
+
+l1 <- lm(y ~ x)
+d1 = d1 %>%
+    bind_cols(
+        pred_sales = predict(l1, data = d1)
+    ) 
+
+p1 = d1 %>%
+    ggplot(aes(x = x)) +
+    geom_point(aes(y = y), color = "red") 
+
+p2 = d1 %>%
+    ggplot(aes(x = x)) +
+    geom_point(aes(y = y), color = "red") +
+    geom_abline(intercept = coef(l1)[1], slope = coef(l1)[2],
+                color = "blue", size = 1)
+
+
+p3 = d1 %>%
+    ggplot(aes(x = x)) +
+    geom_linerange(aes(ymin = y, ymax = pred_sales)) +
+    geom_point(aes(y = y), color = "red") +
+    geom_abline(intercept = coef(l1)[1], slope = coef(l1)[2],
+                color = "blue", size = 1)+
+    geom_text(x = min(x)+.1, y = max(y) - .1, label = paste0("R2 = ", round(summary(l1)$r.squared, 2)))+
+    geom_text(x = min(x)+.1, y = max(y) - 1, label = paste0("p-value = ", round(summary(l1)$coefficients[8], 2)))
+    
+
+print(p1)
+```
+
+# 
+
+```{r}
+print(p2)
+```
+
+# 
+
+```{r}
+print(p3)
+```
+
+# t-test
+
+```{=tex}
+\begin{columns}[T]
+  \column{.49\textwidth}
+  
+  $H_0: \beta_1 = 0$
+  
+  $H_0: y = \beta_0 +  \epsilon$
+  
+  $H_0:$  The linear model is not a good fit
+  
+  \column{.01\textwidth}
+  \rule{.1mm}{.3\textheight}
+
+  \column{.49\textwidth}
+  $H_{\alpha}: \beta_1 \neq 0$
+  
+  $H_{\alpha}: y = \beta_0 + \beta_1x + \epsilon$
+  
+  $H_{\alpha}:$  The linear model is a good fit
+  \end{columns}
+```
+# 
+
+$$t = \frac{\hat{\beta_1}}{sd(\hat{\beta_1})}$$
+
+# Relation between F-test, t-test and and R2
+
+-   We have
+
+$$F = t^2 = \frac{(n-2)R^2}{(1-R^2)}$$
+
+$$\implies \frac{1}{F} =  \bigg(\frac{1}{R^2}-1\bigg)\cdot \frac{1}{n-2}$$
+
+-   This means when $R^2 \nearrow$ , $\frac{1}{R^2} \searrow$ , $\frac{1}{F} \searrow$ and $F \nearrow$.
+
+-   The p-values of F-test and t-test are the same.

@@ -1,0 +1,47 @@
+---
+title: "Decision Tree"
+format: html
+editor: visual
+---
+
+
+---
+# Decision Boundary in Classification
+
+
+
+![](images/db.png)
+
+
+Classification is a process of finding the **decision boundary** that best separate two classes
+
+
+---
+# Decision Boundary in Classification
+
+![](images/db1.png)
+
+
+
+SVM = Support Vector Machine
+
+
+
+---
+# Decision Tree
+
+- Decision Tree for classification is **Classification Tree**
+
+- Decision Tree for Regression is **Regression Tree**
+
+---
+# Example of Classification Tree
+
+
+
+![](images/tree2.jpg)
+
+
+[Link] (http://graphics8.nytimes.com/images/2008/04/16/us/0416-nat-subOBAMA.jpg)
+
+

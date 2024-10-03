@@ -1,0 +1,139 @@
+---
+title: "Generalized Linear Models"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Model and Model Assumptions
+
+In the linear model, we have
+
+\begin{equation}
+y  = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p +\epsilon.
+\end{equation}
+
+This implies
+
+$$E(y|x) = E \bigg(\beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p \bigg|x \bigg) +E(\epsilon|x)$$
+
+Since $\beta$ is non-random, and $E(\epsilon|x) = 0$, we have
+
+$$\mu = E(y|x) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p$$
+
+Generalized linear model expands this model to 
+
+$$g(\mu) = g\bigg(E(y|x)\bigg) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p$$
+
+$g(\cdot)$ function is called the link function. Notice that when $g(\mu) = \mu$ (identity link function), we have linear regression. 
+
+$$g(\mu) = \mu = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p$$
+where $\mu = E(y|x)$. 
+
+### Poisson Regression
+
+$$g(\mu) = log(\mu) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p$$
+
+### Logistic Regression
+
+$$g(\mu) = logit(\mu) = log(\frac{\mu}{1-\mu})= \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ...+ \beta_p x_p$$
+
+Where $y|x$ can only take to two $\mu = E(y|x) =  1 \cdot Prob(y=1|x) + 0 \cdot P(y=0|x$. Thus, you will see that the logistic regression can be written as
+
+$$log(\frac{p}{1-p})= \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ..+ \beta_p x_p$$
+where $p = E(y=1|x)$. 
+
+There are two components that define a generalized linear model.
+
+Component 1: The random component or the distribution of the response. GLM assumes that the response has a linear exponential distribution, whose pdf has the following form
+
+$$
+f(y; \theta, \phi) = exp \bigg[\frac{y\theta - b(\theta)}{\phi} + S(y, \phi) \bigg].
+$$
+Some examples of exponential distribution are normal distribution, binomial distribution, and Poisson distribution. 
+
+Component 2: The link function $g(\cdot)$. In linear regression, the link function is identity function. Some other examples of popular link functions are logit function, $g(\mu) = log\bigg(\frac{\mu}{1-\mu}\bigg)$ and log-link function $g(\mu) = log(\mu)$. 
+
+## Coefficient Estimators
+
+A general approach to estimate $\beta$ is the maximum likelihood method. In the case of linear model, the maximum likelihood estimators (MLE) are the same as the least squared estimators. We show the derivation of MLE for two special cases: logistic regression and Poisson regression. 
+
+### Goodness of Fit
+
+We have the following formula
+
+$$
+\sum_{i=1}^n (y_i - \bar{y}) = \sum_{i=1}^n (y_i - \hat{y_i}) + \sum_{i=1}^n (\hat{y}_i - \bar{y})
+$$
+
+The quantity $TSS = \sum_{i=1}^n (y_i - \bar{y})$ can be though as the total amount of `information` (variance) in the response variable $y$. This quantity is decomposed into $RSS = \sum_{i=1}^n (\hat{y}_i - \bar{y})$ which can be thought as the `information` explained by the resgression models and $RSS = \sum_{i=1}^n (y_i - \hat{y_i})$, which is the amount of `information` that can not be explained by the model (the sum of squared erros of the models).
+
+This formula leads to the definition of $R^2$
+
+$$
+R^2 = 1 - \frac{RSS}{TSS}
+$$
+
+Another way to view this formula is that TSS is actually the sum squared errors of the naive model $y = \bar{y}$ (predicting $y$ value by its  average, disregarding $x$). Thus,
+
+$$
+R^2 = 1 - \frac{\text{Sum squared errors of Linear Model}}{\text{Sum squared errors of the naive Model}}
+$$
+
+Thus, $R^2$ also measure how good the linear model is when comparing with the naive model. This definition of $R^2$ can be applied to measure the goodness of fit of other models, not just linear model. 
+
+To measure the goodness of fit of this linear approximation, we compare the approximation with a naive approximation, which is to approximate all $y_i$ with their average, $\bar{y}$. The naive model is a special case of the linear model where $\beta_1 = 0$. In the other words, the naive models is
+
+\begin{align} 
+y = f_2(x) = \bar{y}
+\end{align} 
+
+
+The sum square error of the naive models is $\sum(y_i-\bar{y})^2$. This quantity is also called the total sum square (SST or TSS). We use the following $R^2$ to measure the goodness of fit of the linear model
+
+\begin{align} 
+R^2 = 1- \frac{\sum(y_i-\hat{y_i})^2}{\sum(y_i-\bar{y})^2} = 1 - \frac{SSE}{SST}
+\end{align} 
+
+It's noticed that if the linear approximation fit the data perfectly ($SSE = 0$), $R^2 = 1$.  
+
+### F-test and t-test
+
+We are interested in testing a subset of $q$ $\beta_i$ parameters are all zeros. This is equivalent to a subset of $q$ predictors are not useful in regressing $y$. Since we can number the predictors (hence $\beta_i$) however we want, we assume that these zeros $\beta_i$ are the last $q$ parameters, or
+
+$$
+H_0: \beta_{p-q+1} = \beta_{p-q} = ... = \beta_p = 0
+$$
+
+We can view this test in another way. We notice that the above $H_0$ is equivalent to stating that the reduced model do not contain the last $q$ predictors are better fit than the full model that contain all the predictors. 
+
+*Reduced Model*: $$y  = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ..+ \beta_p x_q +\epsilon$$
+
+*Full Model*: $$y  = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ..+ \beta_p x_p +\epsilon$$
+
+A smaller p-value will support the full model and reject the reduced model. We use the following F statistics for this test
+
+$$
+F = \frac{(RSS_0-RSS_1)/q}{RSS_1/(n-p-1)} \sim F_{q, n-p-1},
+$$
+where $RSS_0$ and $RSS_1$ are the residual sum squares of the reduced and full model, respectively. 
+
+#### t-test
+
+$$
+H_0: \beta_i = 0 \\
+H_{\alpha}: \beta_i \neq 0
+$$
+
+We have that under $H_0$
+
+$$
+t = \frac{\hat{\beta_1}}{se(\hat{\beta_i})} \sim t_{n-2}
+$$
+
+## Practice Problems

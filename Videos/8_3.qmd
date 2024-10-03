@@ -1,0 +1,422 @@
+---
+title: "Clustering and K-means Clustering"
+format: beamer
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+# What is clustering?
+
+Clustering is grouping data points into groups where data points in one group are `similar` to each other.
+
+# What is clustering?
+
+![](images/clustering1.png){width="100%"}
+
+# Methods of Clustering
+
+We will cover two clustering methods:
+
+-   K-means clustering and
+-   Hierarchical clustering
+
+# K-means Clustering
+
+-   Data
+
+-   Visualize Data
+
+-   Result of K-means clustering
+
+# Step 1
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+euc.dist = function(x1, x2){sqrt(sum((x1 - x2) ^ 2))}
+
+# Use this example for non-unique solution
+# d1 = as_tibble(data.frame(
+#   x1 = c(1, 2, 3, 4, 15, 10, 11, 11, 12, 15, 11, 10, 20, 30, 25, 22, 29, 20, 31, 44, 17, 18, 19, 20), 
+#   x2 = c(5, 6, 8, 8, 4,  20, 22, 27, 30, 23, 10, 15, 33, 44, 19, 14, 19, 22, 19, 20, 44, 11, 22, 37)))
+
+d1 = as_tibble(data.frame(
+  x1 = c(1:10, 31:40), 
+  x2 = c(10, 7, 8, 5, 12, 2, 5, 7, 9, 7, 20, 22, 40, 19, 33, 27, 26, 18, 31, 37)))
+
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2))+ 
+  coord_fixed()
+```
+
+# Step 1: Randomly select centroids
+
+```{r}
+set.seed(2023)
+#set.seed(2022)
+i = sample(c(1:nrow(d1)), 2)
+
+centroid1 = d1[i[1],]
+centroid2 = d1[i[2],]
+centroid = rbind(centroid1, centroid2)
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 1: Collect points for each clusters
+
+```{r}
+
+d1$Distance_to_centroid_1 = apply(d1, 1, euc.dist, x2 = centroid1)
+d1$Distance_to_centroid_2 = apply(d1, 1, euc.dist, x2 = centroid2)
+
+d1$Cluster = as.factor(as.numeric(d1$Distance_to_centroid_1 > d1$Distance_to_centroid_2 )+1)
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Relocate centroids
+
+```{r}
+centroid = d1 %>% select(x1, x2, Cluster) %>% group_by(Cluster) %>% summarise_all(mean)
+
+centroid1 = centroid[1,] %>% select(x1, x2)
+centroid2 = centroid[2,] %>% select(x1, x2)
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Collect points for each clusters
+
+```{r}
+d1 = d1 %>% select(x1, x2)
+
+d1$Distance_to_centroid_1 = apply(d1, 1, euc.dist, x2 = centroid1)
+d1$Distance_to_centroid_2 = apply(d1, 1, euc.dist, x2 = centroid2)
+
+d1$Cluster = as.factor(as.numeric(d1$Distance_to_centroid_1 > d1$Distance_to_centroid_2 )+1)
+
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Relocate centroids
+
+```{r}
+centroid = d1 %>% select(x1, x2, Cluster) %>% group_by(Cluster) %>% summarise_all(mean)
+
+centroid1 = centroid[1,] %>% select(x1, x2)
+centroid2 = centroid[2,] %>% select(x1, x2)
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Collect points for each clusters
+
+```{r}
+d1 = d1 %>% select(x1, x2)
+
+d1$Distance_to_centroid_1 = apply(d1, 1, euc.dist, x2 = centroid1)
+d1$Distance_to_centroid_2 = apply(d1, 1, euc.dist, x2 = centroid2)
+
+d1$Cluster = as.factor(as.numeric(d1$Distance_to_centroid_1 > d1$Distance_to_centroid_2 )+1)
+
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Relocate centroids
+
+```{r}
+centroid = d1 %>% select(x1, x2, Cluster) %>% group_by(Cluster) %>% summarise_all(mean)
+
+centroid1 = centroid[1,] %>% select(x1, x2)
+centroid2 = centroid[2,] %>% select(x1, x2)
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Collect points for each clusters
+
+```{r}
+d1 = d1 %>% select(x1, x2)
+
+d1$Distance_to_centroid_1 = apply(d1, 1, euc.dist, x2 = centroid1)
+d1$Distance_to_centroid_2 = apply(d1, 1, euc.dist, x2 = centroid2)
+
+d1$Cluster = as.factor(as.numeric(d1$Distance_to_centroid_1 > d1$Distance_to_centroid_2 )+1)
+
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Relocate centroids
+
+```{r}
+centroid = d1 %>% select(x1, x2, Cluster) %>% group_by(Cluster) %>% summarise_all(mean)
+
+centroid1 = centroid[1,] %>% select(x1, x2)
+centroid2 = centroid[2,] %>% select(x1, x2)
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Collect points for each clusters
+
+```{r}
+d1 = d1 %>% select(x1, x2)
+
+d1$Distance_to_centroid_1 = apply(d1, 1, euc.dist, x2 = centroid1)
+d1$Distance_to_centroid_2 = apply(d1, 1, euc.dist, x2 = centroid2)
+
+d1$Cluster = as.factor(as.numeric(d1$Distance_to_centroid_1 > d1$Distance_to_centroid_2 )+1)
+
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Relocate centroids
+
+```{r}
+centroid = d1 %>% select(x1, x2, Cluster) %>% group_by(Cluster) %>% summarise_all(mean)
+
+centroid1 = centroid[1,] %>% select(x1, x2)
+centroid2 = centroid[2,] %>% select(x1, x2)
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Collect points for each clusters
+
+```{r}
+d1 = d1 %>% select(x1, x2)
+
+d1$Distance_to_centroid_1 = apply(d1, 1, euc.dist, x2 = centroid1)
+d1$Distance_to_centroid_2 = apply(d1, 1, euc.dist, x2 = centroid2)
+
+d1$Cluster = as.factor(as.numeric(d1$Distance_to_centroid_1 > d1$Distance_to_centroid_2 )+1)
+
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Relocate centroids
+
+```{r}
+centroid = d1 %>% select(x1, x2, Cluster) %>% group_by(Cluster) %>% summarise_all(mean)
+
+centroid1 = centroid[1,] %>% select(x1, x2)
+centroid2 = centroid[2,] %>% select(x1, x2)
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Collect points for each clusters
+
+```{r}
+d1 = d1 %>% select(x1, x2)
+
+d1$Distance_to_centroid_1 = apply(d1, 1, euc.dist, x2 = centroid1)
+d1$Distance_to_centroid_2 = apply(d1, 1, euc.dist, x2 = centroid2)
+
+d1$Cluster = as.factor(as.numeric(d1$Distance_to_centroid_1 > d1$Distance_to_centroid_2 )+1)
+
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Relocate centroids
+
+```{r}
+centroid = d1 %>% select(x1, x2, Cluster) %>% group_by(Cluster) %>% summarise_all(mean)
+
+centroid1 = centroid[1,] %>% select(x1, x2)
+centroid2 = centroid[2,] %>% select(x1, x2)
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Collect points for each clusters
+
+```{r}
+d1 = d1 %>% select(x1, x2)
+
+d1$Distance_to_centroid_1 = apply(d1, 1, euc.dist, x2 = centroid1)
+d1$Distance_to_centroid_2 = apply(d1, 1, euc.dist, x2 = centroid2)
+
+# Assigning points to centroids
+d1$Cluster = as.factor(as.numeric(d1$Distance_to_centroid_1 > d1$Distance_to_centroid_2 )+1)
+
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Relocate centroids
+
+```{r}
+centroid = d1 %>% select(x1, x2, Cluster) %>% group_by(Cluster) %>% summarise_all(mean)
+
+centroid1 = centroid[1,] %>% select(x1, x2)
+centroid2 = centroid[2,] %>% select(x1, x2)
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Step 2: Collect points for each clusters
+
+```{r}
+d1 = d1 %>% select(x1, x2)
+
+d1$Distance_to_centroid_1 = apply(d1, 1, euc.dist, x2 = centroid1)
+d1$Distance_to_centroid_2 = apply(d1, 1, euc.dist, x2 = centroid2)
+
+d1$Cluster = as.factor(as.numeric(d1$Distance_to_centroid_1 > d1$Distance_to_centroid_2 )+1)
+
+
+ggplot(data = d1)+
+  geom_point(aes(x=x1, y=x2, color = Cluster))+
+  geom_point(data = centroid, aes(x=x1, y=x2), size = 5)+ 
+  coord_fixed()
+```
+
+# Centroids
+
+```{r}
+knitr::kable(centroid)
+```
+
+# Example
+
+```{r}
+x = c(1,2,3,4,5)
+set.seed(1983)
+y = sample(1:10, replace = TRUE, 5)
+  
+df <- data.frame(Cluster = c(1,2,1,1,2),
+                 Point = LETTERS[1:5],
+                 x = x,
+                 y = y)
+df = as_tibble(df)
+
+library(knitr)
+kable(df)
+
+v = df %>% group_by(Cluster) %>% 
+  summarise(varx = sum((x-mean(x))^2),
+            vary = sum((y-mean(y))^2)) %>% 
+  mutate(var = varx+vary) %>% 
+  summarise(total = sum(var))
+```
+
+# 
+
+```{r}
+kable(df)
+```
+
+-   Total Variance within
+
+# 
+
+```{r}
+a = df %>% 
+    group_by(Cluster) %>% 
+    summarise(c_x = round(mean(x),2), c_y = round(mean(y),2))
+
+df$C_1x = a$c_x[1]
+df$C_1y = a$c_y[1]
+
+df$C_2x = a$c_x[2]
+df$C_2y = a$c_y[2]
+kable(df)
+```
+
+# 
+
+```{r}
+df$dc1 = round(((df$x-df$C_1x)^2 + (df$y-df$C_1y)^2)^(1/2),2)
+df$dc2 = round(((df$x-df$C_2x)^2 + (df$y-df$C_2y)^2)^(1/2),2)
+kable(df)
+```
+
+# 
+
+```{r}
+df$min_distance = apply(data.frame(df$dc1, df$dc2),1, min)
+df1 = df %>% select(-C_1x, -C_1y, -C_2x, -C_2y)
+kable(df1)
+```
+
+# 
+
+```{r}
+df$New_Cluster = c(df$dc1>df$dc2)+1
+df1 = df %>% select(-C_1x, -C_1y, -C_2x, -C_2y)
+kable(df1)
+```
+
+-   Total within-cluster Variation
+
+```{r}
+v_new = df %>% group_by(New_Cluster) %>% 
+  summarise(varx = sum((x-mean(x))^2),
+            vary = sum((y-mean(y))^2)) %>% 
+  mutate(var = varx+vary) %>% 
+  summarise(total = sum(var))
+```

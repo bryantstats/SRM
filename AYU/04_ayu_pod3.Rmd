@@ -1,0 +1,255 @@
+
+---
+title: "Week 4 - AYU - Pod"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: united
+  pdf_document:
+    toc: yes
+  word_document:
+    toc: yes
+---
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+![](13.png)
+
+We can read the time series from a dataset using the following function
+
+```{r}
+library(tidyverse)
+d <- read_csv('https://raw.githubusercontent.com/karlarao/forecast_examples/master/Amtrak%20data.csv')
+
+# create a time series object, frequency = 12 means monthly time series
+d = drop_na(d)
+t <- ts(d$Ridership, start = 1991, frequency = 12)
+```
+
+
+We then can visualize the time series using the `plot` function or `autoplot` function
+
+```{r}
+library(forecast)
+autoplot(t)
+```
+
+We can make a prediction/forecast using 
+
+```{r}
+# naive forecasting
+pred1 <- naive(t, h =20)
+autoplot(pred1)
+summary(pred1)
+```
+
+```{r}
+library(quantmod)
+library(lubridate)
+getSymbols("AAPL")
+
+t2 <- AAPL$AAPL.Open
+pred2<- naive(t2, h =200)
+autoplot(pred2)
+summary(pred2)
+```
+
+```{r}
+library(xts)
+library(quantmod)
+library(forecast)
+getSymbols("AAPL")
+
+t2 = AAPL$AAPL.Open
+
+train <- t2[index(t2) <= "2020-07-01"] 
+validation <- t2[index(t2) > "2020-07-01"]
+
+model <- auto.arima(train)
+
+
+forecast <- forecast(model, h = 5000) 
+forecast_dates <- seq(as.Date("2015-09-01"), length = 5000, by = "day")
+forecast_xts <- xts(forecast = forecast$mean, order.by = forecast_dates)
+plot(validation, main = 'Forecast Comparison')
+lines(forecast_xts, col = "blue")
+```
+
+
+We can test the model using
+
+Now practice with the follows questions on this dataset. 
+
+## 1. Autocorrelations
+
+1. Find the correlation between stock A and stock B
+
+2. Find the auto correlation of Stock A
+
+3. Plot the ACF of stock A
+
+
+## 2. Moving Average Smoothing 
+
+- Smoothing to remove seasonal and detect trend
+
+$$
+s_{n+1} = \frac{y_n + y_{n-1} + y_{n-2}}{3}
+$$
+
+```{r}
+## Data 1
+t1 = scan("beerprod.dat")
+t1 = ts(t1, freq = 4)
+
+t1_sma = SMA(t1, n = 12)
+
+plot(t1, type= "b", main = "moving average annual trend")
+lines(t1_sma, col = "red")
+
+## Data 2
+d2 <-  read_csv('AirPassengers.csv')
+t2 = ts(d2$Number_Passengers, start = c(1949, 1), frequency = 12)
+
+t2_sma = SMA(t2, n =12)
+plot(t2, type= "b", main = "moving average annual trend")
+lines(t2_sma, col = "red")
+
+```
+
+## 3. Exponentioal Smoothing
+
+While simple moving average distribute the weight equally to a few most recent observations, exponential smoothing distribute the weight unequally to ALL observations.  The weights distribution is controlled by parameter $\alpha$. Large $\alpha$ (close to 1) will give higher weights to the most recent observations. 
+
+$$
+s_{n+1} = \alpha y_n + \alpha(1-\alpha)^1y_{n-1} + \alpha(1-\alpha)^2y_{n-2} + ... + \alpha(1-\alpha)^{n-1}y_{1}
+$$
+
+
+```{r}
+## Data 1
+# In exponential smoothing, a higher ratio will weight more on the recent observation, 
+# ratio close to 1 will have a 100% weight on the most recent observation
+t1_ema = EMA(t1, ratio = .5)
+plot(t1, type= "b", main = "moving average annual trend")
+lines(t1_ema, col = "red")
+
+## Data 2
+t2_ema = EMA(t2, ratio = .5)
+plot(t2, type= "b", main = "moving average annual trend")
+lines(t2_ema, col = "red")
+```
+
+
+## 4. Auroregression first order/AR(1) Model
+
+$$
+y_t = \beta_0 +\beta_1 y_{t-1} +\epsilon_t
+$$
+where $|\beta_1| < 1$, $\epsilon \sim (0, \sigma^2)$. 
+
+```{r}
+a1 = arima(t1, c(1,0,0))
+plot(t1)
+lines(t1-a1$residuals, col = "red")
+```
+```{r}
+a2 = arima(t2, c(1,0,0))
+plot(t2)
+lines(t2-a2$residuals)
+```
+
+
+## Stock
+
+```{r}
+library(xts)
+library(quantmod)
+library(forecast)
+getSymbols("AAPL")
+
+t3 = AAPL$AAPL.Open
+
+t3 <- ts(t3[index(t3) > "2023-01-01"])
+
+a3 <- arima(t3, order = c(1,0,0))
+
+plot(t3, xlim = c(1,100))
+t3_fitted = t3-a3$residuals
+forecast <- forecast(a3, h = 10) 
+t3_fitted_forecast = ts(c(t3_fitted,forecast$mean))
+lines(t3_fitted2, col = 'red')
+```
+
+## Stock with ARIMA models
+
+```{r}
+# Check stationary of the stock
+
+# Using ACF: for stattionary: ACF drop to 0 quickly while ACF of non-stattionary drop to 0 slowly.
+# r1 of non-stationary is also large and positive. 
+
+library(xts)
+library(quantmod)
+library(forecast)
+getSymbols("AAPL")
+
+t3 = AAPL$AAPL.Open
+t3 <- t3[index(t3) > "2023-01-01"]
+acf(t3, lag.max = 100)
+```
+The ACF shows that the first auto-correlation $r_1$ is very high (close to 1). Thus, we believe that the stock tis non-stationary. 
+
+```{r}
+# Ljung-Box test
+# Large p-value indicates stationary
+# Small p-value indicates non-stationary
+Box.test(t3, lag=10, type="Ljung-Box")
+```
+
+The small p-value of the Ljung-Box test also incidates that the series is non-stationary. 
+
+We need to transform the series to a stationary series so that we can apply the arima model to it. 
+
+```{r}
+t3_dif = diff(t3)
+t3_dif = t3_dif[-1] # remove the first entry, which is NA
+Box.test(t3_dif, lag=10, type="Ljung-Box")
+```
+The large p-value indicates that the difference series is stationary. Now that the series is stationary, we can use AR(1) to model it. 
+
+# AR(1) Model
+
+```{r}
+t3_dif = ts(as.numeric(t3_dif))
+a3 <- arima(t3_dif, order = c(1,0,0))
+plot(t3_dif, xlim = c(1,100))
+t3_fitted = t3_dif-a3$residuals
+forecast <- forecast(a4, h = 10) 
+t3_fitted_forecast = ts(c(t3_fitted,forecast$mean))
+lines(t3_fitted_forecast, col = 'red')
+```
+
+```{r}
+t5 = uschange[,"Consumption"]
+acf(t5, lag.max = 100)
+```
+
+We can see the the the autocorrelations when the lag increases are within the blue line and die out to zero. This indicates that the series is stationary and we can use AR(1) model on it.  
+
+```{r}
+a5 = arima(t5, order = c(1,0,0))
+plot(t5)
+lines(t5-a5$residuals, col = "red")
+```
+Forecast the next 
+
+```{r}
+forecast(a5, h = 1)
+```
+

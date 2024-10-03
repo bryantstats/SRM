@@ -1,0 +1,203 @@
+---
+title: "AYU - Pod Week 5"
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = FALSE)
+```
+
+### Instruction
+
+1.  *Open the Rmarkdown file of this assignment ([link](05_ayu_pod_submission.Rmd)) in Rstudio.*
+
+2.  *Right under each question, insert a code chunk (you can use the hotkey Ctrl + Alt + I to add a code chunk) and code the solution for the question.*
+
+3.  *Once you are done answering all the question, Knit the file (Use: Ctrl + Shift + K or Click to Knit -\> Knit to pdf or Word) to convert the Rmarkdown file into a pdf or word file to submit to Canvas.*
+
+------------------------------------------------------------------------
+
+![](14.png)
+
+## 1. Sample Codes
+
+### 1.1 Classification Tree
+
+In this example, we will work with the `German Credit dataset` in the CASdatasets library. If you have not installed the library yet, use `install.packages(CASdatasets)` to install the library. To load the dataset, use `data(credit)`.  This dataset contains information of 1,000 credit records. It is a consumer credit files, called the German Credit dataset in Tuff'ery (2011) and Nisbet et al. (2011). New applicants for credit and loans can be evaluated as good or bad payers using 21 explanatory variables.
+
+To know more about the dataset, type `?credit` to the console.
+
+We will train a decision tree to predict the `class` variable. This variable takes binary values: 0 stands for good and 1 bad (or credit-worthy against not credit-worthy, or no non-payments against existing non-payments).
+
+We first load the necessary libraries and data.  Then we change the name of the target variable `class` to target using the `mutate` function. Having the same `target` name for all the target makes this codes more reusable for other modeling tasks. 
+
+```{r}
+library(CASdatasets)
+library(tidyverse)
+library(caret)
+
+# load the credit dataset
+data(credit)
+
+# create df and rename the variable class to target
+df <- as_tibble(credit)
+df <- rename(df, target=class)
+
+# change target to categorical variable
+df$target = as.factor(df$target)
+
+```
+
+We could train a classification tree on the entire dataset.  However, we will use the statistical learning approach to train the model on only a portion of the data and use the remaining unused data for testing the accuracy of the model. To do this, we first split the data into 70% training and 30% testing. 
+
+```{r}
+library(caret)
+set.seed(2020)
+splitIndex <- createDataPartition(df$target, p = .70, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+```
+
+Now we will use the `rpart` function in the [`rpart` library](https://cran.r-project.org/web/packages/rpart/index.html) to train a decision tree.  We set the maximum depth of the tree to be 3 (`maxdepth = 3`)
+
+```{r}
+library(rpart) #load the rpart package
+# Create a tree
+tree_model <- rpart(target ~ ., data = df_train,
+                 control = rpart.control(maxdepth = 3))
+```
+
+Notice that int ehe `rpart` function we used `target ~ .` to indicate that the predictors are all the remaining variables.  If we want, say `duration` and `credit_history` to be our predictors, we can use: `target ~ duration + credit_history`, for example. 
+
+Next we want to visualize this tree.  We will call the `fancyRpartPlot` in the `rattle` package. 
+
+```{r}
+library(rattle)
+fancyRpartPlot(tree_model)
+```
+
+A nice feature of a decision tree is that it can rank variables based on the variables' importance. 
+
+```{r}
+tree_model$variable.importance
+
+# plot the top 5 importance variable used in predicting class
+barplot(tree_model$variable.importance[1:5])
+```
+
+Finally, we want to evaluate this tree.  We will use the tree to make predictions on the test dataset and compare the predictions with true value to determine the accuracy of the model. 
+
+```{r}
+
+# make predictions on test data
+pred <- predict(tree_model, df_test, type = "class")
+
+#Evaluate the predictions
+cm <- confusionMatrix(data = pred, 
+                      reference = df_test$target, 
+                      positive = "1")
+cm$overall[1]
+```
+
+
+### Practice 1
+
+We will work with the [Actuarial Loss dataset](actuarual_loss.csv). This dataset includes realistic, synthetically generated worker compensation insurance policies, all of which have had an accident. For each record there is demographic and worker related information, as well as a text description of the accident.
+
+The data dictionary can be found at [this link](https://www.kaggle.com/c/actuarial-loss-estimation/data). 
+
+We want to train a classification tree to predict if a policy cost higher than the median cost. The `target` variable is `Claim_Cost_Category` taking value 1 for claim cost higher than the median cost and 0 otherwise. 
+
+Do the follows. 
+
+- Set the target and set the target variable to be categorical (factor) 
+- Partition the data into 70% training and 30% testing. 
+- Create a decision tree with maximum depth of 5 on the training data to predict the claim cost category (i.e., `claim_cost_category` is your target variable).  
+- Plot the decision tree
+- Calculate the accuracy of the decision tree on the test data.
+- Plot the bar chart of the variable importance according to the tree. 
+
+```{r, echo=FALSE, eval=FALSE}
+library(tidyverse)
+df <- read_csv('actuarial_loss.csv')
+```
+
+
+## 2. Random Forest for classification
+
+```{r, echo=FALSE, eval=FALSE}
+library(randomForest)
+forest_model = randomForest(target ~ ., data=df_train, ntree = 500, mtry = 3)
+pred <- predict(forest_model, df_test, type = "class")
+cm <- confusionMatrix(data = pred, reference = df_test$target, positive = "1")
+cm$overall[1]
+```
+
+
+```{r, echo=FALSE, eval=FALSE}
+library(ranger)
+forest_model <- ranger(target ~ ., data=df_train, importance='impurity', mtry=3, num.trees = 500,)
+pred <- predict(forest_model, df_test, type = "response")
+cm <- confusionMatrix(data = pred$predictions, reference = df_test$target, positive = "1")
+cm$overall[1]
+```
+
+Question: Continue work with the same Actuarial Loss dataset
+
+- Train a random forest of 1000 trees and `mtry=5` to predict claim cost category on the training data. 
+- Calculate the accuracy of the forest on the testing data. 
+
+## 3. Regression Tree
+
+```{r}
+library(tidyverse)
+library(caret)
+df <- read_csv('german_credit.csv')
+df <- df %>% rename(target=credit_amount)
+
+library(caret)
+set.seed(2020)
+splitIndex <- createDataPartition(df$target, p = .70, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+
+library(rpart) #load the rpart package
+# Create a tree
+tree_model <- rpart(target ~ ., data = df_train,
+                 control = rpart.control(maxdepth = 3))
+library(rattle)
+fancyRpartPlot(tree_model)
+
+tree_model$variable.importance
+barplot(tree_model$variable.importance)
+pred1 <- predict(tree_model, df_test)
+#Evaluate the predictions
+postResample(pred = pred1, obs = df_test$target)
+```
+
+
+- Create a decision tree with maximum depth of 3 on the training data to predict the ultimate claim cost(i.e., `UltimateIncurredClaimCost` is your target variable).  
+- Plot the decision tree
+- Calculate the RMSE, Rsquared and MAE of the decision tree on the test data.
+- Plot the bar chart of the variable importance according to the tree. 
+
+
+## 4. Random Forest for Regression
+
+```{r}
+library(ranger)
+forest_model <- ranger(target ~ ., data=df_train, importance='impurity', mtry=3, num.trees = 500,)
+pred2 <- predict(forest_model, df_test)
+#Evaluate the predictions
+postResample(pred = pred2$predictions, obs = df_test$target)
+```
+
+Question: Continue work with the same Actuarial Loss dataset
+
+- Train a random forest of 1000 trees and `mtry=5` to predict the ultimate claim cost on the training data. 
+- Calculate the RMSE, Rsquared and MAE of the decision tree on the test data.

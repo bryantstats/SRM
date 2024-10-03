@@ -1,0 +1,202 @@
+---
+title: "Tree Based Models"
+format: beamer
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# Ensemble Models
+
+- An ensemble is a composite model, combining a series of low performing models (based models)  with the aim of creating an improved classifier.
+
+- The based model in ensemble models are usually decision trees
+
+# Ensemble Models
+
+- Two common ensembles:
+
+    - Bagging
+    - Boosting
+    
+# 
+
+\begin{center}
+\Huge Bagging
+\end{center}
+
+# Bagging
+
+-   Step 1: From the original Dataset create $k$ boostrap dataset (Boostrap sample)
+
+-   Step 2: Train $k$ models (decision trees for example) on the $k$ boostrap sample
+
+-   Step 3: After training, use the $k$ models to make $k$ predictions
+
+-   Step 4: The final prediction is
+
+    -   the majority vote of the $k$ predictions in Step 3 for a categorical target or
+
+    -   the average of the $k$ predictions for a continuous target.
+
+# How to make a boostrap sample?
+
+<center>![](images/ba1.png){width="200"}</center>
+
+# Bagging
+
+![](images/ba2.png){width="250"}
+
+# Example 1: Classification
+
+A bagging model uses three boostraping samples to train a decision with one split (called a stump). The response variable is whether a customer make a claim on a policy. The three trees after training are as follows.
+
+![](35.png){width=450}
+
+- Use the bagging model to predict if a 30 year-old male customer who is a non-smoker would make claim on the policy. The customer does not have children.
+
+# Solution
+
+The predictions of the three trees on the customer as follows. Notice that the customer is a 30 year-old male, who is a non-smoker and does not have children.
+
+- Tree 1 predicts: Claim
+- Tree 2 predicts: Claim
+- Tree 3 predicts: No Claim
+
+The final prediction is the majority vote between the three trees.  Thus the final prediction of the bagging model is: Claim, or the customer would make a claim on the policy. 
+
+# Example 2: Regression
+
+A bagging model uses three boostraping samples to train a decision with one split (called a stump). The response variable is the claim amount of the customer on a policy. The three trees after training are as follows.
+
+![](36.png){width=450}
+
+-   Use the bagging model to predict the claim amount of a 30 year-old male customer who is a smoker. The customer does not have children.
+
+# Solution
+
+The predictions of the three trees on the customer as follows. Notice that the customer is a 30 year-old male, who is a smoker and does not have children.
+
+- Tree 1 predicts: Claim amount of 100k
+- Tree 2 predicts: Claim amount of 120k
+- Tree 3 predicts: Claim amount of 80k
+
+The final prediction is the average of the three predictions.  Thus the final prediction of the bagging model is: $(100k+120k+80k)/3 = 100k$.
+
+
+
+# Random Forest
+
+-   A random forest is a bagging model that used decision trees as the based model
+
+-   When training trees, at each split, only a random subset of $k$ variables are considered to decide the best split
+
+-   The smaller the $k$ value, the more diverse the forest
+
+# 
+
+\begin{center}
+\Huge Boosting
+\end{center}
+
+# The idea
+
+- Train a weak model
+
+- Update the data to address the model's mistakes
+
+- Retrain the model 
+
+- Repeat the process
+
+# 
+
+- Train Model A, usually weak model, on the original dataset (D1)
+
+- Obtain Trained Model A - Version 1 (Learner 1)
+
+- Calculate the error of the above model
+
+- Update the Dataset 1 (D1) to Dataset 2 (D2) to `emphasize` the errors
+
+- Train Model A again on Dataset 2 (D2)
+
+- Obtain Trained Model A - Version 2 (Learner 2)
+
+- Calculate the error of the above model
+
+- Update the Dataset 2 (D2) to Dataset 3 (D3) to `emphasize` the errors
+
+- Train Model A again on Dataset 3 (D3)
+
+- Obtain Trained Model A - Version 3 (Learner 3)
+
+- And so on. 
+
+- All the learners then called to vote to make the final prediction
+
+# Boosting
+
+![](BO1.png){width=450}
+
+# Boosting
+
+- Different boosting models have different ways to update the data to emphasize the errors
+
+- Some popular boosting models: Gradient Boosting, Adaboost
+
+# 
+
+\begin{center}
+\Huge Gradient Boosting
+\end{center}
+
+
+# Gradient Boosting
+
+- Update the data by replacing the original response by the error of the previous model
+
+# Gradient Boosting
+
+- Train a weak model on the original data (response variable: $y$)
+
+| $x_1$ 	| $x_2$ 	| $y$ 	|
+|---------	|-------	|----------	|
+|   ...      	|  ...     	|       ...   	|
+
+- Calculate the error $\epsilon = y-\hat{y}$
+
+- Retrain model A on this below data (response variable: $\epsilon$)
+
+| $x_1$ 	| $x_2$ 	| $\epsilon$ 	|
+|---------	|-------	|----------	|
+|  ...       	|    ...   	|  ...        	|
+
+- Repeat the process
+- Aggregate all the model's prediction to make the final prediction
+
+# Example 3 - Gradient Boosting Calculation
+
+[Click Here](https://bryantstats.github.io/SRM/Videos/gb_calculation.html)
+
+# 
+
+\begin{center}
+\Huge Adaboost
+\end{center}
+
+
+# Adaboost
+
+- Update the data by adding more copies of the observations that the previous model predicts wrongly. 
+
+# Adaboost
+
+![](images/bo4.png)
+
+# Adaboost
+
+![](images/bo5.png)
+

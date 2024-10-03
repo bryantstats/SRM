@@ -1,0 +1,27 @@
+
+---
+title: "Week 7 - AYU - Pod"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: united
+  word_document:
+    toc: yes
+---
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Questions
+
+Adding code chunks (Ctrl + Alt + I) below of each questions to answer the questions. 
+
+1.  Run the all given codes in the assignment and show all the results
+
+2.  Do all the Practices
