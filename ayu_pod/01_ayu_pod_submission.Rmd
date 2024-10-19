@@ -2,7 +2,8 @@
 ---
 title: "Week 1 - Pod - Submission"
 output:
-  pdf_document:
+  word_document: default
+  pdf_document: null
 ---
 
 ```{r setup, include=FALSE}
