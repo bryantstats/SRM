@@ -213,7 +213,7 @@ summary(lm(TOTCHG~AGE + LOS + factor(GENDER), data = d))
 predict(model, list(AGE = 13, LOS = 7, GENDER = 1))
 ```
 
-5.  Does adding `AGE` and `APRDRG` to the model in Question 4 make it more significant? Use the F-test to address the question.
+5.  Does adding `RACE` and `APRDRG` to the model in Question 4 make it more significant? Use the F-test to address the question.
 
 ```{r, echo = FALSE, include=FALSE}
 reduced <- lm(TOTCHG~ LOS + factor(GENDER) + factor(RACE) , data = d)
