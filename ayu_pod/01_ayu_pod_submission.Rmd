@@ -76,7 +76,7 @@ Run linear regression to regress the `Claim_Count` on the `Severity`.  Give the 
 
 In this question, we will use the `Automobile Insurance Claims` dataset at the below link:
 
-[Automobile Insurance Claims](https://instruction.bus.wisc.edu/jfrees/jfreesbooks/Regression%20Modeling/BookWebDec2010/CSVData/NAICExpense.csv)
+[Automobile Insurance Claims](https://bryantstats.github.io/SRM/ayu_pod/data/frees/AutoClaims.csv)
 
 a. Import the following dataset into Rstudio. 
 b. View the dataset. 
