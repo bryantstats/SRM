@@ -109,7 +109,7 @@ Determine which or the following is always true.
 
 #### Problem 5 (Parameter Estimation)
 
-You are given the following six observed values of the autoregressive model of order one time series
+You are given the following observed values of the autoregressive model of order one time series
 
 $$
 y_t = \beta_0 + \beta_1 y_{t-1} + \epsilon_t, \text{ with   }  Var(\epsilon_t) = \sigma^2.

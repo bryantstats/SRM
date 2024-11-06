@@ -132,7 +132,7 @@ b.  Use the View function to view the data
 
 a.  We will use the `read_csv` function to read the data. To use this function, we can install a package containing the function, the `tidyverse` package.
 
-In the Rstudio console
+In the Rstudio console (not in the Rmarkdown file)
 
 ```{r}
 install.packages('tidyverse')
