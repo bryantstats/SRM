@@ -190,4 +190,4 @@ We observe that with this large p-value, the model does not fit the data well.
 
 3.  Create a binary variable from `TOTCHG` and train a logistic regression with this newly created variable being the response. Give the model summary. Make a prediction with the model. Calculate the training accuracy of the model.
 
-4.  Find a dataset that has a counting variable to train a Poisson regression on. Train a Poisson regression with the data. Give the model summary. Make a prediction with the model. Report the p-value of the Goodness of fit test for the model.
+4.  Find a different dataset (different from the datasets used previously in this assignment) that has a counting variable to train a Poisson regression on. Train a Poisson regression with the data. Give the model summary. Make a prediction with the model. Report the p-value of the Goodness of fit test for the model.
