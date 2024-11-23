@@ -30,7 +30,7 @@ In this example, we will work with the `German Credit dataset` in the CASdataset
 
 ```{r, eval=FALSE}
 install.packages(c("sp",'xts','zoo'))
-install.packages("http://dutangc.free.fr/pub/RRepos/pub/src/contrib/CASdatasets_1.0-12.tar.gz", 
+install.packages("https://cas.uqam.ca/pub/src/contrib/CASdatasets_1.2-0.tar.gz", 
                  repos = NULL, 
                  type = "source")
 ```
