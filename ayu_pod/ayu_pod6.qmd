@@ -152,9 +152,16 @@ We will work with the [Actuarial Loss dataset](actuarial_loss.csv). This dataset
 
 The data dictionary can be found at [this link](https://www.kaggle.com/c/actuarial-loss-estimation/data).
 
-We want to train a classification tree to predict if a policy cost higher than the median cost. The `target` variable is `Claim_Cost_Category` taking value 1 for claim cost higher than the median cost and 0 otherwise.
+We want to train a classification tree to predict if a policy cost higher than the median cost. The `target` variable is `claim_cost_category` taking value 1 for claim cost higher than the median cost and 0 otherwise.
 
 Do the follows.
+
+-   Read the data using read_csv and use the below code to remove some variables
+
+```{r, eval=FALSE}
+df = df %>% select(-ClaimNumber, -ClaimDescription, -UltimateIncurredClaimCost, -InitialIncurredCalimsCost, -DateReported)
+```
+
 
 -   Set the target and set the target variable to be categorical (factor)
 -   Partition the data into 70% training and 30% testing.
@@ -239,3 +246,52 @@ In this practice, we will continue working with the same dataset in Practice 1: 
 1.  Run the all codes in the Section 1 and show all the results
 
 2.  Do Practice 1 and 2.
+
+
+
+```{r, eval=FALSE, echo=FALSE}
+#solution
+df = read_csv('https://bryantstats.github.io/SRM/ayu_pod/actuarial_loss.csv')
+
+df = df %>% select(-ClaimNumber, -ClaimDescription, -UltimateIncurredClaimCost, -InitialIncurredCalimsCost, -DateReported)
+
+# create df and rename the variable class to target
+df <- rename(df, target=claim_cost_category)
+
+# change target to categorical variable
+df$target = as.factor(df$target)
+
+# Split the data to training and testing
+library(caret)
+set.seed(2020)
+splitIndex <- createDataPartition(df$target, p = .70, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+
+library(rpart) #load the rpart package
+# Create a tree
+tree_model <- rpart(target ~ ., data = df_train,
+                 control = rpart.control(maxdepth = 3))
+library(rattle)
+fancyRpartPlot(tree_model)
+
+tree_model$variable.importance
+barplot(tree_model$variable.importance[1:5])
+pred1 <- predict(tree_model, df_test)
+
+
+# make predictions on test data
+pred <- predict(tree_model, df_test, type = "class")
+
+#Evaluate the predictions
+cm <- confusionMatrix(data = pred, 
+                      reference = df_test$target, 
+                      positive = "1")
+cm$overall[1]
+
+
+
+```
+
+
