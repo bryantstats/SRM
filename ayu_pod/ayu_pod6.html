@@ -268,7 +268,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Read the data using read_csv and use the below code to remove some variables</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> df <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>ClaimNumber, <span class="sc">-</span>ClaimDescription, <span class="sc">-</span>UltimateIncurredClaimCost, <span class="sc">-</span>InitialIncurredCalimsCost, <span class="sc">-</span>DateReported)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>ClaimNumber, <span class="sc">-</span>ClaimDescription, <span class="sc">-</span>UltimateIncurredClaimCost, <span class="sc">-</span>InitialIncurredCalimsCost, <span class="sc">-</span>DateReported, <span class="sc">-</span>DateTimeOfAccident)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li>Set the target and set the target variable to be categorical (factor)</li>
@@ -366,6 +367,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="practice-2" class="level3">
 <h3 class="anchored" data-anchor-id="practice-2">1.6. Practice 2</h3>
 <p>In this practice, we will continue working with the same dataset in Practice 1: <a href="actuarual_loss.csv">Actuarial Loss dataset</a>. We will train a regression tree to predict the actual claim cost (target variable: <code>UltimateIncurredClaimCost</code>). Do the follows.</p>
+<ul>
+<li>Remove some of the variables from the models using the below codes</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>ClaimNumber, <span class="sc">-</span>ClaimDescription, <span class="sc">-</span>DateReported, <span class="sc">-</span>DateTimeOfAccident)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <ul>
 <li><p>Create a decision tree with maximum depth of 3 on the training data to predict the ultimate claim cost(i.e., <code>UltimateIncurredClaimCost</code> is your target variable).</p></li>
 <li><p>Plot the decision tree</p></li>

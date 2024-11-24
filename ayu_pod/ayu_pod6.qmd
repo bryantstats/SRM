@@ -159,7 +159,8 @@ Do the follows.
 -   Read the data using read_csv and use the below code to remove some variables
 
 ```{r, eval=FALSE}
-df = df %>% select(-ClaimNumber, -ClaimDescription, -UltimateIncurredClaimCost, -InitialIncurredCalimsCost, -DateReported)
+df = df %>% 
+  select(-ClaimNumber, -ClaimDescription, -UltimateIncurredClaimCost, -InitialIncurredCalimsCost, -DateReported, -DateTimeOfAccident)
 ```
 
 
@@ -229,6 +230,14 @@ postResample(pred = pred2$predictions,
 
 In this practice, we will continue working with the same dataset in Practice 1: [Actuarial Loss dataset](actuarual_loss.csv). We will train a regression tree to predict the actual claim cost (target variable: `UltimateIncurredClaimCost`). Do the follows.
 
+- Remove some of the variables from the models using the below codes
+
+```{r, eval=FALSE}
+df = df %>% 
+  select(-ClaimNumber, -ClaimDescription, -DateReported, -DateTimeOfAccident)
+```
+
+
 -   Create a decision tree with maximum depth of 3 on the training data to predict the ultimate claim cost(i.e., `UltimateIncurredClaimCost` is your target variable).
 
 -   Plot the decision tree
@@ -289,9 +298,35 @@ cm <- confusionMatrix(data = pred,
                       reference = df_test$target, 
                       positive = "1")
 cm$overall[1]
-
-
-
 ```
 
+```{r, eval=FALSE, echo=FALSE}
+#solution
+df = read_csv('https://bryantstats.github.io/SRM/ayu_pod/actuarial_loss.csv')
+
+df = df %>% select(-ClaimNumber, -ClaimDescription, -DateReported, -DateTimeOfAccident)
+
+# create df and rename the variable class to target
+df <- rename(df, target=UltimateIncurredClaimCost)
+
+# Split the data to training and testing
+library(caret)
+set.seed(2020)
+splitIndex <- createDataPartition(df$target, p = .70, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+
+library(rpart) #load the rpart package
+# Create a tree
+tree_model <- rpart(target ~ ., data = df_train,
+                 control = rpart.control(maxdepth = 3))
+library(rattle)
+fancyRpartPlot(tree_model)
+pred1 <- predict(tree_model, df_test)
+
+#Evaluate the predictions
+postResample(pred = pred1, obs = df_test$target)
+
+```
 
