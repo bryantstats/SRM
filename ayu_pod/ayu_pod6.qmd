@@ -260,6 +260,7 @@ df = df %>%
 
 ```{r, eval=FALSE, echo=FALSE}
 #solution
+library(tidyverse)
 df = read_csv('https://bryantstats.github.io/SRM/ayu_pod/actuarial_loss.csv')
 
 df = df %>% select(-ClaimNumber, -ClaimDescription, -UltimateIncurredClaimCost, -InitialIncurredCalimsCost, -DateReported)
