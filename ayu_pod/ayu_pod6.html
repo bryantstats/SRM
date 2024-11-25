@@ -265,7 +265,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We want to train a classification tree to predict if a policy cost higher than the median cost. The <code>target</code> variable is <code>claim_cost_category</code> taking value 1 for claim cost higher than the median cost and 0 otherwise.</p>
 <p>Do the follows.</p>
 <ul>
-<li>Read the data using read_csv and use the below code to remove some variables</li>
+<li>Read the data using read_csv and use the below code to remove some variables, assuming the data is named <code>df</code>.</li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> df <span class="sc">%&gt;%</span> </span>
@@ -368,7 +368,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="practice-2">1.6. Practice 2</h3>
 <p>In this practice, we will continue working with the same dataset in Practice 1: <a href="actuarual_loss.csv">Actuarial Loss dataset</a>. We will train a regression tree to predict the actual claim cost (target variable: <code>UltimateIncurredClaimCost</code>). Do the follows.</p>
 <ul>
-<li>Remove some of the variables from the models using the below codes</li>
+<li>Remove some of the variables from the models using the below codes, assuming the data is named <code>df</code>.</li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> df <span class="sc">%&gt;%</span> </span>

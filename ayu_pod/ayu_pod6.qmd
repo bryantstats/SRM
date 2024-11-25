@@ -156,7 +156,7 @@ We want to train a classification tree to predict if a policy cost higher than t
 
 Do the follows.
 
--   Read the data using read_csv and use the below code to remove some variables
+-   Read the data using read_csv and use the below code to remove some variables, assuming the data is named `df`. 
 
 ```{r, eval=FALSE}
 df = df %>% 
@@ -230,7 +230,7 @@ postResample(pred = pred2$predictions,
 
 In this practice, we will continue working with the same dataset in Practice 1: [Actuarial Loss dataset](actuarual_loss.csv). We will train a regression tree to predict the actual claim cost (target variable: `UltimateIncurredClaimCost`). Do the follows.
 
-- Remove some of the variables from the models using the below codes
+- Remove some of the variables from the models using the below codes, assuming the data is named `df`. 
 
 ```{r, eval=FALSE}
 df = df %>% 
