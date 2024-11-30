@@ -108,25 +108,31 @@ cm$overall[1]
 ```
 
 ::: {.cell-output .cell-output-stdout}
+
 ```
 Accuracy 
     0.71 
 ```
+
+
 :::
 :::
+
+
+### Practice 1
+
+Use the [Actuarial Loss dataset](actuarial_loss2.csv),
+
+- Train a KNN with `k = 3` on the training data to predict the claim cost category (i.e., `claim_cost_category` is your target variable). 
+
+- Calculate the accuracy of the model on the test data.
+
 
 ::: {.cell}
 
 :::
 
 
-### Practice 1
-
-Use the [Actuarial Loss dataset](actuarial_loss.csv),
-
-- Train a KNN with `k = 3` on the training data to predict the claim cost category (i.e., `claim_cost_category` is your target variable). 
-
-- Calculate the accuracy of the model on the test data.
 
 ## KNN for Regression
 
@@ -159,19 +165,31 @@ postResample(pred = pred$pred, obs = df_test$target)
 ```
 
 ::: {.cell-output .cell-output-stdout}
+
 ```
         RMSE     Rsquared          MAE 
 2451.3859498    0.2617057 1680.7370000 
 ```
+
+
 :::
 :::
 
 
 ### Practice 2
 
+Use the [Actuarial Loss dataset](actuarial_loss2.csv):
+
 - Train a KNN with `k = 5` on the training data to predict the ultimate claim cost (i.e., `UltimateIncurredClaimCost` is your target variable).  
 
 - Calculate the RMSE, Rsquared and MAE of the model on the test data.
+
+
+::: {.cell}
+
+:::
+
+
 
 ## Questions
 

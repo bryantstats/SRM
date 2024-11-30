@@ -100,18 +100,42 @@ cm <- confusionMatrix(data = pred,
 cm$overall[1]
 ```
 
-```{r, echo=FALSE, eval=FALSE}
-library(tidyverse)
-df <- read_csv('actuarial_loss.csv')
-```
-
 ### Practice 1
 
-Use the [Actuarial Loss dataset](actuarial_loss.csv),
+Use the [Actuarial Loss dataset](actuarial_loss2.csv),
 
 - Train a KNN with `k = 3` on the training data to predict the claim cost category (i.e., `claim_cost_category` is your target variable). 
 
 - Calculate the accuracy of the model on the test data.
+
+```{r, eval=FALSE, echo=FALSE}
+library(tidyverse)
+library(caret)
+library(class)
+
+df <- read_csv('actuarial_loss2.csv')
+
+df = knn_prepared(df, target_variable = 'claim_cost_category')
+
+library(caret)
+set.seed(2023)
+splitIndex <- createDataPartition(df$target, p = .90, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+
+pred = knn(select(df_train, -target), 
+           test = select(df_test, -target), 
+           cl = df_train$target,
+           k = 7)
+
+cm <- confusionMatrix(data = pred, 
+                      reference = as.factor(df_test$target), 
+                      positive = "1")
+cm$overall[1]
+
+```
+
 
 ## KNN for Regression
 
@@ -142,9 +166,39 @@ postResample(pred = pred$pred, obs = df_test$target)
 
 ### Practice 2
 
+Use the [Actuarial Loss dataset](actuarial_loss2.csv):
+
 - Train a KNN with `k = 5` on the training data to predict the ultimate claim cost (i.e., `UltimateIncurredClaimCost` is your target variable).  
 
 - Calculate the RMSE, Rsquared and MAE of the model on the test data.
+
+```{r, echo=FALSE, eval=FALSE}
+
+library(tidyverse)
+library(caret)
+library(class)
+
+df <- read_csv('actuarial_loss2.csv')
+df = knn_prepared(df, target_variable = 'UltimateIncurredClaimCost')
+
+
+library(caret)
+set.seed(2020)
+splitIndex <- createDataPartition(df$target, p = .70, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+
+
+pred = knn.reg(train = select(df_train, -target), 
+               test = select(df_test, -target), 
+               y = df_train$target, 
+               k = 5)
+
+postResample(pred = pred$pred, obs = df_test$target)
+
+```
+
 
 ## Questions
 
