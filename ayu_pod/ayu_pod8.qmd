@@ -88,12 +88,6 @@ We look for the `elbow` point of the graph, to identify the number of cluster. L
 Let visualize these clusters in the dendogram.
 
 ```{r}
-# Assign clusters to the observations
-sub_grp <- cutree(hi_clustering, k = 3)
-
-USArrests = USArrests %>%
-  mutate(cluster = sub_grp)
-
 # Visualize the cluster
 plot(hi_clustering, cex = 0.6)
 rect.hclust(hi_clustering, k = 3, border = 2:5)
@@ -102,6 +96,10 @@ rect.hclust(hi_clustering, k = 3, border = 2:5)
 The `factoextra` also provide a way to visualize the clusters by the principal component analysis. Notice that the horizontal axis is the first principal component and the vertical axis is the second principal component analysis. We can see that the two principals break down the clusters quite clearly.
 
 ```{r}
+# Assign clusters to the observations
+sub_grp <- cutree(hi_clustering, k = 3)
+
+
 fviz_cluster(list(data = df, cluster = sub_grp))
 ```
 
