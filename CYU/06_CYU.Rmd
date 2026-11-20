@@ -1,0 +1,67 @@
+---
+title: "Week 6 - Check Your Understanding"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. All the trees in a random forest are trained on the same original dataset. 
+    
+    a. True
+    
+    b. False
+    
+2. To decide the best variable to split for a tree in a random forest, one would consider all the possible predictors to decide the best. 
+
+    a. True
+    
+    b. False
+
+3. In random forest, one can estimate the test error without performing cross validation or other validation set approach.
+    
+    a. True
+    
+    b. False
+
+4. Random forest usually improve the accuracy over prediction using a single tree.
+    
+    a. True
+    
+    b. False
+
+5. Bagging method can be applied to linear models.
+    
+    a. True
+    
+    b. False
+
+6. Bagging models will reduce the variance of the model comparing to a single model
+    
+    a. True
+    
+    b. False
+
+7. Bagging models will be easier to interpret than a single model
+
+    a. True
+    
+    b. False
+
+8. The number of variables/predictors considered at each split to decide the best split in a random forest is $\sqrt{p}$ where $p$ is the total number of predictors. 
+
+    a. True
+    
+    b. False
+    
+
+9. One can increase the diversify of a random forest by increasing the number of variables/predictors considered at each split to decide the best split in a random forest
+
+    a. True
+    
+    b. False
+    

@@ -1,0 +1,15 @@
+\frametitle{What is the closest line to the points?}
+\protect\hypertarget{what-is-the-closest-line-to-the-points}{}
+\begin{itemize}
+\item
+  The least squared methods give us the formula for the \texttt{closest}
+  line:
+\item
+  \(y = \hat{\beta_1}x+\hat{\beta_0}\)
+\item
+  \(\hat{\beta_{1}} = \frac{\sum_{i=1}^{n}{(x_i-\bar{x})(y_i-\bar{y})}}{\sum_{i=1}^{n}(x_i-\bar{x})^2} = \frac{S_{xy}}{S_{xx}}\)
+\item
+  \(\hat{\beta_{0}} = \bar{y} - \hat{\beta_{1}}\bar{x}\)
+\item
+  This line is also called the best fitted line
+\end{itemize}

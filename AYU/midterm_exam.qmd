@@ -1,0 +1,359 @@
+---
+title: "Midterm - Exam"
+format: 
+  html:
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = FALSE)
+```
+
+## Problem 1
+
+You are given the following summary statistics:
+
+```{=tex}
+\begin{align*}
+n &= 5 \\
+\sum{x} &= 40 \\
+\sum{y} &= 91 \\
+\sum (x_i-\bar{x})^2 &= 40 \\
+\sum (x_i - \bar{x})(y_i-\bar{y}) &= 59 \\
+\sum (y_i-\bar{y})^2 &= 214.8
+\end{align*}
+```
+Determine the equation of the regression line, using the least squares method.
+
+(A) $y = 2.456 + 1.475x$
+
+(B) $y = 6.4 + 1.475x$
+
+(C) $y = -6.4 + 1.475x$
+
+(D) $y = -6.4 - 1.475x$
+
+(E) The correct answer is not given by (A), (B), (C), or (D).
+
+```{r, echo=FALSE}
+x = c(1,2, 5, 7, 11)
+y = c(4,8,11, 15, 30)
+
+sum(x)
+sum(y)
+sum((x-mean(x))^2)
+sum((x-mean(x))*(y-mean(y)))
+sum((y-mean(y))^2)
+
+beta_1 = sum((x-mean(x))*(y-mean(y)))/sum((x-mean(x))^2)
+beta_1
+
+beta_0 = mean(y)-beta_1*mean(x)
+beta_0
+
+lm(y~x)
+```
+
+## Problem 2
+
+Two actuaries are analyzing dental claims for a group of $n = 200$ participants. The predictor variable is education, with 0 and 1 as possible values.
+
+Actuary 1 uses the following regression model:
+
+$$Y = \beta + \epsilon$$
+
+Actuary 2 uses the following regression model:
+
+$$Y = \beta_0 + \beta_1 \times Education + \epsilon$$
+
+Given $R^2 = .9$. Calculate the F-statistic to test whether the model of Actuary 2 is a significant improvement over the model of Actuary 1.
+
+(A) 1712
+(B) 1792
+(C) 0.8
+(D) 1782
+(E) The correct answer is not given
+
+```{r}
+n = 200
+R2 = .9
+F = (n-2)*(R2/(1-R2))
+F
+```
+
+## Problem 3
+
+Peter observes the following coffee prices in his company cafeteria:
+
+-   1 bagel for 1.00 (USD)
+-   2 bagel for 1.50 (USD)
+
+The cafeteria announces that they will begin to sell any amount of bagels for a price that is the value predicted by a simple linear regression using least squares of the current prices.
+
+With the new pricing model, how much Peter would save if he bought 10 bagels instead of 5 bagels twice?
+
+(A) It would cost him more so he would not save any money.
+(B) He would save 0.5 (USD)
+(C) He would save 1 (USD)
+(D) He would save 1.5 (USD)
+(E) The correct answer is not given
+
+```{r}
+y = c(1,2,6,8,4)
+y_hat = c(5,3,8,9,10)
+
+SSE = sum((y-y_hat)^2)
+
+```
+
+## Problem 4
+
+You are given the following data
+
+| $y$ | $x_1$ | $x_2$ |
+|-----|-------|-------|
+| 2   | 1     | 1     |
+| 3   | 1     | 1     |
+| 4   | 2     | 2     |
+| 6   | 0     | 0     |
+| 10  | 3     | 0     |
+
+You are using the following model:
+
+$$
+y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \epsilon_i, \quad i = 1, 2,..., 6
+$$
+
+You have determine
+
+$$
+(X'X)^{-1} = \begin{bmatrix}
+0.75 & -0.25 & -0.25\\
+-0.25 &  0.1944 & -0.0278 \\
+-0.25 & -0.0278 & 0.3611
+\end{bmatrix}
+$$
+
+Determine $\hat{\beta_1}$.
+
+(A) -2.00
+(B) -0.75
+(C) -0.5
+(D) 1.75
+(E) The correct answer is not given
+
+```{r}
+X = matrix(c(1,1,1,1,1,1,1,2,0,3,1,1,2,0,0), ncol = 3)
+y = matrix(c(2,3,4,6,10), ncol = 1)
+solve(t(X)%*%X)
+beta = solve(t(X)%*%X)%*%t(X)%*%y
+```
+
+## Problem 5
+
+You fit a multiple linear regression to a data of 200 observation and 4 predictors. You have determined that the coefficient of determination of the model is 0.8. Calculate the F-statistics to test the significant of the model.
+
+(A) 45
+(B) 85
+(C) 125
+(D) 195
+(E) The correct answer is not given
+
+```{r}
+n = 200
+p = 4
+R2 = .8
+F = (R2/p)/((1-R2)/(n-p-1))
+F
+```
+
+## Problem 6
+
+You are given
+
+-   A sample size of a dataset is 100
+
+-   The regression equation $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_1^2 + \beta_3 x_2 +\beta_4 x_3 + \epsilon$$ was to fit the data and resulted in $R^2 = 0.9$
+
+-   A second regression equation $$y = \gamma_0 + \gamma_1 x_1 + \gamma_2 x_1^2+\epsilon$$ was to fit to the data.
+
+-   The F statistic used to test whether class section is significant variable is 10.
+
+Determine the $R^2$ of the second regression.
+
+(A) .60
+(B) .65
+(C) .75
+(D) .85
+(E) The correct answer is not given
+
+## Problem 7
+
+The following two models were fit to 20 observations:
+
+Model 1: $y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon$\
+Model 2: $y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1x_2 +\beta_4 x_1^2 +\beta_5 x_2^2 + \epsilon$
+
+The result of the regression are:
+
+| Model Number | Error Sum of Squares | Regression Sum of Squares |
+|:-------------|:---------------------|:--------------------------|
+| 1            | 110                  | 15                        |
+| 2            | 78                   | RSS2                      |
+
+Calculate the Regression Sum of Squares of the second model.
+
+(A) 15
+(B) 125
+(C) 47
+(D) 78
+(E) The correct answer is not given
+
+```{r}
+110+15-78
+```
+
+## Problem 8
+
+A regression of the return on a mutual fund ($y$) on five predictors plus an intercept is performed. The $F$ statistic for the regression is $F = 20$ and the $R^2 = 0.8$. Determine the sample size of the dataset used for the regression.
+
+(A) $n \leq 21$
+(B) $n = 31$
+(C) $n = 41$
+(D) $n = 51$
+(E) The correct answer is not given
+
+```{r}
+n = 100
+p = 5
+F = 30
+
+R2 = (F*p)/(F*p + n - p - 1)
+R2
+```
+
+## Problem 9
+
+You are given the following information for a GLM of customer retention
+
+![](images/a2.png){width="35%"}
+
+Calculate the probability of retention for a policy with 10 drivers and a prior rate changes of 7%.
+
+(A) Less than 0.85
+(B) At least 0.85, but less than 0.87
+(C) At least 0.87, but less than 0.89
+(D) At least 0.89, but less than 0.91
+(E) At least 0.91
+
+## Problem 10
+
+You are given the follow.
+
+![](images/a6.png){width="50%"}
+
+Calculate the predicted number deaths for a population of 200,000 females age 25
+
+(A) Less than 3
+(B) At least 3, but less than 5
+(C) At least 5, but less than 7
+(D) At least 7, but less than 9
+(E) At least 9
+
+## Problem 11
+
+You are given the following output of an GLM.
+
+![](27.png){width="50%"}
+
+Calculate the probability of a policy with 2 years of tenure that experienced at a 15% prior rate increase and has 150,000 in amount of insurance will retain into the next policy term.
+
+(A) Less than 0.6
+(B) At least 0.6, but less than 0.7
+(C) At least 0.7, but less than 0.8
+(D) At least 0.8, but less than 0.9
+(E) At least 0.9
+
+## Problem 12
+
+You are given:
+
+i)  The random walk model
+
+$$
+y_t =  y_0 + c_1 + c_2 + c_3 +...+c_t,
+$$
+
+where $c_i, (i = 1, 2,..., t)$ denote observations from a white noise process.
+
+ii) The following ten observed values of $c_t$:
+
+| t     | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  |
+|:------|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|
+| $y_t$ | 2   | 5   | 10  | 13  | 18  | 20  | 24  | 25  | 27  | 30  |
+
+iii) $y_0 = 0$
+
+Calculate the 9 step-ahead forecast, $\hat{y}_{19}$ .
+
+## Problem 13
+
+You are given an AR(1) with known parameters as follows.
+
+```{=tex}
+\begin{align*}
+y_t &= .5y_{t-1} + 1 + \epsilon \\
+y_T &= 7
+\end{align*}
+```
+Calculate the three step ahead forecast of $y_{T+3}$
+
+## Problem 14
+
+You are given the following time series
+
+| $t$   | 1   | 2   | 3   | 4   | 5   | 6   |
+|:------|:----|:----|:----|:----|:----|:----|
+| $y_t$ | 1   | 3   | 5   | 7   | 11  | 20  |
+
+Forecasting $y_{7}$ using exponential smoothing with $w = .1$
+
+## Problem 15
+
+A classification tree is being constructed to predict if an insurance policy will lapse. A random sample of 100 policies contains 30 that lapsed. You are considering two splits:
+
+-   Split 1: One node has 20 observations with 12 lapses and one node has 80 observations with 18 lapses.
+
+-   Split 2: One node has 10 observations with 8 lapses and one node has 90 observations with 22 lapses.
+
+The total entropy after a split is the weighted average of the entropy at each node, with the weights proportional to the number of observations in each node.
+
+Determine which of split is better based on total entropy
+
+------------------------------------------------------------------------
+
+```{=html}
+<!--
+## Problem 4
+
+You are given the following results from a regression model.
+
+| Observation number (i) | $y_i$ | $\hat{f}(x_i)$ |
+|:------------------------|:-------|:----------------|
+| 1                      | 1     | 5              |
+| 2                      | 2     | 3              |
+| 3                      | 6     | 8              |
+| 4                      | 8     | 9              |
+| 5                      | 4     | 10              |
+
+Calculate the sum of squared errors (SSE).
+
+(A) 10
+(B) 58
+(C) 14
+(D) 16
+(E) 46
+
+-->
+```

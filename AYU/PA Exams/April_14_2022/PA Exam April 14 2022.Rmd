@@ -1,0 +1,118 @@
+
+This code is for the April 2022 PA Exam
+
+Starter code: This first chunk should be run first.
+
+IMPORTANT NOTE: When pasting a picture from RStudio to Word, there is only one approach that will work. After right clicking on the image in RStudio and selecting “copy” the following steps need to be taken in Word. On the Home menu, click on the down arrow under “Paste” and then select “Paste Special …” From the list of options, select “Device Independent Bitmap.” 
+
+```{r}
+
+# The tidyverse contains ggplot2, readr, and other libraries.
+
+library(tidyverse)
+
+# c15 indicates the variable types of the data.
+
+c15 <- c(rep(c("numeric"),8),rep(c("factor"),7))
+
+
+# Read in data. 
+
+data.all<- read.csv( file = 'Exam PA Tempe ALS Data.csv',colClasses = c15)
+
+```
+Task 1: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 2: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+
+Task 3:
+
+This task's given code should be run as is.
+Some candidate coding is required and there is a place for it at the end of the chunk.
+
+```{r}
+
+# Copy data to use for this task. 
+
+data.all.task3 <- data.all
+
+
+# CANDIDATE CODE  
+
+# Place your code here.
+
+
+
+```
+Task 4: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 5: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+
+Task 6:
+
+This task's given code should be run as is.
+
+No candidate coding is required.
+
+
+```{r}
+# Copy data to use for this task. 
+
+data.all.task6 <- data.all
+
+# Your assistant's code cleans up turnout.time.
+
+# Remove observations where turnout.time is missing.
+
+data.all.task6 <- data.all.task6[!is.na(data.all.task6$turnout.time),]
+
+
+# Remove observations where turnout.time is negative or
+# greater than 600.
+
+data.all.task6 <- data.all.task6[(data.all.task6$turnout.time >= 0) & (data.all.task6$turnout.time<=600),]
+
+
+## GLM model with interaction
+data.all.task6$turnout.time.1 = data.all.task6$turnout.time + 0.1
+
+model6 = glm(turnout.time.1 ~ vehicle + station
+         , data = data.all.task6
+         , family=gaussian(link='log'))
+
+model6.interaction = glm(turnout.time.1 ~ vehicle + station + station * vehicle
+         , data = data.all.task6
+         , family=gaussian(link='log'))
+summary(model6)
+summary(model6.interaction)
+```
+Task 7: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 8: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 9: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 10: No code.
+```{r}
+# This task does not involve running or writing code.
+```
+Task 11: No code.
+```{r}
+# This task does not involve running or writing code.
+```

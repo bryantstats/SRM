@@ -1,0 +1,60 @@
+---
+title: "Week 8 - Check Your Understanding"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. In k-means clustering, one needs to specify the number of cluster before the calculation process. 
+    
+    a. True
+    b. False
+    
+2. In k-means clustering, the final result of clustering does not depend on the initial selection of centroids. 
+
+    a. True
+    b. False
+
+3. In k-means clustering, the calculation process stops when there are not change in the positions of the centroids. 
+    
+    a. True
+    b. False
+
+4. The result of k-means clustering should not depend on the selection of the distance measurement
+    
+    a. True
+    
+    b. False
+
+5.  Like k-means clustering, in hierarchical clustering, one needs to specify the number of clusters before the calculation process.
+    
+    a. True
+    
+    b. False
+
+6. In hierarchical clustering, the distance between two clusters should always be the distance between the centroids of the two clusters. 
+    
+    a. True
+    b. False
+
+7. In hierarchical clustering, the choice of linkage will impact the way observations are clustered
+
+    a. True
+    b. False
+
+8. K-means clustering is sensitive to outliers 
+
+    a. True
+    b. False
+    
+
+9. Clustering is supervised learning method
+
+    a. True
+    b. False
+    

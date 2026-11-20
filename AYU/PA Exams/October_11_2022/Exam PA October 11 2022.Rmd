@@ -1,0 +1,283 @@
+Start up code.
+
+The data used in these tasks are read from the following csv files:
+
+missed_general_pickup.csv
+missing_garbage_cart.csv
+debris.csv
+mixed_pickups.csv
+geo.grid.csv
+
+Before starting any tasks, load the following libraries and set a seed.
+
+```{r}
+
+# Load libraries.
+library(ggplot2)
+library(caret) 
+
+set.seed(1022)
+```
+
+Task 1
+
+```{r}
+
+# No code or data is provided for this task.
+
+```
+
+Task 2
+
+```{r}
+
+# This chunk has three demarcated sections in which candidates are to add or
+# alter code.
+
+# There are also sections (one to split the data and one to run two models)
+# of code that are to be run as given.
+
+
+# Read in the data for the task.
+var_classes <- c('factor','numeric', 'factor','numeric','factor', 'numeric')
+df.debris <- read.csv('debris.csv',colClasses=var_classes)
+
+# ------------- Candidate code -------------------------
+# Put your code below to make requested table for part a).
+
+
+
+
+
+
+
+# Code you place above should be copied to the Word answer document in part a).
+# ------------------------------------------------------- 
+
+# The code to split the data below is to be run unchanged.
+
+# Set seed. 
+set.seed(2) # Do not change this.
+
+# Split the data into Train & Test portions.
+train_rows <- createDataPartition(df.debris$year.mo,  p = 0.8, list = FALSE)
+debris_train <- df.debris[train_rows,]
+debris_test  <- df.debris[-train_rows,]
+
+# ------------- Candidate code -------------------------
+
+# Put your code below to remove observations from the train and test data sets.
+# Either write your own code or remove the '#' and change CONDITION in the 
+# two lines of code below.
+
+#debris_train <-debris_train[CONDITION,]
+#debris_test <-debris_test[CONDITION,]
+
+
+# Copy the code you produced above to the Word document in part d).
+#---------------------------------------------------------
+
+# The code to run and summarize the two models below is to be run unchanged.
+
+# Run the first model (Gamma)
+
+# glm1
+formula.glm1 <- as.formula("Time.to.resolution + 0.5 ~ year + month + DEPARTMENT + area") 
+model.glm1 <- glm(formula.glm1, data = debris_train, family = Gamma(link="log"))
+
+summary(model.glm1)
+
+
+# Run the second model (poisson)
+
+# glm2
+formula.glm2 <- as.formula("Time.to.resolution ~ year + month + DEPARTMENT + area")
+model.glm2 <- glm(formula.glm2, data = debris_train,  family = poisson)
+
+summary(model.glm2)
+
+# ------------- Candidate code -------------------------
+
+# This space is for your code to calculate RMSE for each of the
+# two models.
+# There is a space for code to be added and then there are code fragments
+# that are commented out.
+
+# Below is the space for code to be added.
+# Add code to create values needed for RMSE calculation.
+
+
+
+
+
+# Below are code fragments to adjust. 
+# The code should calculate the RMSE for each model using the needed values above.
+# Remove four '#'s at the beginning of the four lines of code below.
+# Add your code where indicated.
+
+#RMSE.1 <- # Add your code here for the first model.
+#RMSE.2  <- # Add your code here for the second model.
+
+#RMSE.1
+#RMSE.2
+
+# The code you wrote above and the RMSE values should be copied to your Word answer document.
+#-------------------------------------------------------------------------------
+```
+
+Task 3
+
+```{r}
+
+# Candidate will add code where indicated.
+
+# Read in the data for the task.
+var_classes <- c('numeric', 'factor','factor')
+df.mixed.pickups <- read.csv("mixed_pickups.csv",colClasses=var_classes)
+
+# ------------- Candidate code -------------------------
+# Use the space below for code to make a graph that shows the trend of 
+# resolution times over the years, split by department type.
+
+
+
+
+
+# Copy the graph you produced above to the Word document.
+#-------------------------------------------------------------------------------
+
+```
+
+Task 4
+
+```{r}
+
+# No code or data is provided for this task.
+
+```
+
+Task 5
+
+```{r}
+
+# No code or data is provided for this task.
+
+```
+
+Task 6
+
+```{r}
+
+# No code or data is provided for this task.
+
+```
+
+Task 7
+
+```{r}
+
+# No code or data is provided for this task.
+
+```
+
+Task 8
+
+```{r}
+
+# No code or data is provided for this task.
+
+```
+
+Task 9
+
+```{r}
+
+# No code or data is provided for this task.
+
+```
+
+Task 10
+
+```{r}
+
+# The code for this task is to be run as given.
+
+# Read in the data.
+var_classes <- c('numeric', 'numeric','factor', 'factor')
+df.missed.general.pickup <-read.csv('missed_general_pickup.csv',colClasses=var_classes)
+df.missing.garbage.cart <-read.csv('missing_garbage_cart.csv',colClasses=var_classes)
+
+# Model Time.to.resolution for each of the two complaints.
+formula.both <- 'Time.to.resolution + 0.05 ~  year + quarter + area'
+
+# Model for the first complaint type.
+model1 <- glm(formula=formula.both, data=df.missed.general.pickup, family = Gamma(link = "log"))
+
+# Sumary of first model.
+summary(model1)
+
+# Drop1 for first model.
+drop1(model1)
+
+
+# Model for the second complaint type.
+model2 <- glm(formula=formula.both, data=df.missing.garbage.cart, family = Gamma(link = "log"))
+
+# Sumary of second model.
+summary(model2)
+
+# Drop1 for second model.
+drop1(model2)
+
+```
+
+Task 11
+
+```{r}
+
+# No code or data is provided for this task.
+
+```
+
+Task 12
+
+```{r}
+
+# The code for this task is to be run as given.
+
+# Read in the task data.
+var_classes <- c('factor','numeric','numeric', 'factor','factor','numeric','numeric')
+df.grid <- read.csv('geo.grid.csv',colClasses=var_classes)
+
+#  Poisson1 model
+#
+Poisson1 <-glm(Ave.Time.to.resolution ~ DEPARTMENT + 
+                                        year + 
+                                        month + 
+                                        Latitude_Binned + 
+                                        Longitude_Binned, 
+               data = df.grid, 
+               family = poisson, 
+               weights = rep(1/nrow(df.grid), times=nrow(df.grid)))
+               # the weights above are equal for all groups.
+
+summary(Poisson1)
+
+
+#  Poisson2 model
+#
+Poisson2 <- glm(Ave.Time.to.resolution ~ DEPARTMENT +
+                                        year + 
+                                        month + 
+                                        Latitude_Binned + 
+                                        Longitude_Binned, 
+                data = df.grid, 
+                family = poisson, 
+                weights = call_count/sum(df.grid$call_count))
+                # The weights above vary by the number of calls within each group.
+
+
+summary(Poisson2)
+
+
+```

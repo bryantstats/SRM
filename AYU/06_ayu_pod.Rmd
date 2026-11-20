@@ -1,0 +1,163 @@
+
+---
+title: "Week 6 - AYU - Pod"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: united
+  word_document:
+    toc: yes
+---
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+![](14.png)
+
+## 1. Classification Tree
+
+```{r}
+library(CASdatasets)
+library(tidyverse)
+library(caret)
+data(credit)
+df <- credit
+df <- df %>% rename(target=class)
+
+df <- df %>% 
+  mutate(target = as.factor(target))
+
+
+library(caret)
+set.seed(2020)
+splitIndex <- createDataPartition(df$target, p = .70, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+
+library(rpart) #load the rpart package
+# Create a tree
+tree_model <- rpart(target ~ ., data = df_train,
+                 control = rpart.control(maxdepth = 3))
+library(rattle)
+fancyRpartPlot(tree_model)
+
+tree_model$variable.importance
+barplot(tree_model$variable.importance)
+pred <- predict(tree_model, df_test, type = "class")
+#Evaluate the predictions
+cm <- confusionMatrix(data = pred, reference = df_test$target, positive = "1")
+cm$overall[1]
+```
+Question: We will work with the [Actuarial Loss dataset](actuarual_loss.csv). The data dictionary is as follows.
+
+ClaimNumber: Unique policy identifier
+DateTimeOfAccident: Date and time of accident
+DateReported: Date that accident was reported
+Age: Age of worker
+Gender: Gender of worker
+MaritalStatus: Martial status of worker. (M)arried, (S)ingle, (U)nknown.
+DependentChildren: The number of dependent children
+DependentsOther: The number of dependants excluding children
+WeeklyWages: Total weekly wage
+PartTimeFullTime: Binary (P) or (F)
+HoursWorkedPerWeek: Total hours worked per week
+DaysWorkedPerWeek: Number of days worked per week
+ClaimDescription: Free text description of the claim
+InitialIncurredClaimCost: Initial estimate by the insurer of the claim cost
+UltimateIncurredClaimCost: Total claims payments by the insurance company. This is the field you are asked to predict in the test set.
+Claim_Cost_Category: 1 for claim cost higher than the median cost and 0 otherwise. 
+
+
+- Partition the data into 70% training and 30% testing. 
+- Create a decision tree with maximum depth of 5 on the training data to predict the claim cost category (i.e., `claim_cost_category` is your target variable).  
+- Plot the decision tree
+- Calculate the accuracy of the decision tree on the test data.
+- Plot the bar chart of the variable importance according to the tree. 
+
+```{r, echo=FALSE, eval=FALSE}
+library(tidyverse)
+df <- read_csv('actuarial_loss.csv')
+```
+
+
+## 2. Random Forest for classification
+
+```{r, echo=FALSE, eval=FALSE}
+library(randomForest)
+forest_model = randomForest(target ~ ., data=df_train, ntree = 500, mtry = 3)
+pred <- predict(forest_model, df_test, type = "class")
+cm <- confusionMatrix(data = pred, reference = df_test$target, positive = "1")
+cm$overall[1]
+```
+
+
+```{r, echo=FALSE, eval=FALSE}
+library(ranger)
+forest_model <- ranger(target ~ ., data=df_train, importance='impurity', mtry=3, num.trees = 500,)
+pred <- predict(forest_model, df_test, type = "response")
+cm <- confusionMatrix(data = pred$predictions, reference = df_test$target, positive = "1")
+cm$overall[1]
+```
+
+Question: Continue work with the same Actuarial Loss dataset
+
+- Train a random forest of 1000 trees and `mtry=5` to predict claim cost category on the training data. 
+- Calculate the accuracy of the forest on the testing data. 
+
+## 3. Regression Tree
+
+```{r}
+library(tidyverse)
+library(caret)
+df <- read_csv('german_credit.csv')
+df <- df %>% rename(target=credit_amount)
+
+library(caret)
+set.seed(2020)
+splitIndex <- createDataPartition(df$target, p = .70, 
+                                  list = FALSE)
+df_train <- df[ splitIndex,]
+df_test <- df[-splitIndex,]
+
+library(rpart) #load the rpart package
+# Create a tree
+tree_model <- rpart(target ~ ., data = df_train,
+                 control = rpart.control(maxdepth = 3))
+library(rattle)
+fancyRpartPlot(tree_model)
+
+tree_model$variable.importance
+barplot(tree_model$variable.importance)
+pred1 <- predict(tree_model, df_test)
+#Evaluate the predictions
+postResample(pred = pred1, obs = df_test$target)
+```
+
+
+- Create a decision tree with maximum depth of 3 on the training data to predict the ultimate claim cost(i.e., `UltimateIncurredClaimCost` is your target variable).  
+- Plot the decision tree
+- Calculate the RMSE, Rsquared and MAE of the decision tree on the test data.
+- Plot the bar chart of the variable importance according to the tree. 
+
+
+## 4. Random Forest for Regression
+
+```{r}
+library(ranger)
+forest_model <- ranger(target ~ ., data=df_train, importance='impurity', mtry=3, num.trees = 500,)
+pred2 <- predict(forest_model, df_test)
+#Evaluate the predictions
+postResample(pred = pred2$predictions, obs = df_test$target)
+```
+
+Question: Continue work with the same Actuarial Loss dataset
+
+- Train a random forest of 1000 trees and `mtry=5` to predict the ultimate claim cost on the training data. 
+- Calculate the RMSE, Rsquared and MAE of the decision tree on the test data.

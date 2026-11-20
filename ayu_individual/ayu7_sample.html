@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>AYU - Individual Week 7 - Sample Problems and Solutions</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="ayu7_sample_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ayu7_sample_files/libs/quarto-html/quarto.js"></script>
+<script src="ayu7_sample_files/libs/quarto-html/popper.min.js"></script>
+<script src="ayu7_sample_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="ayu7_sample_files/libs/quarto-html/anchor.min.js"></script>
+<link href="ayu7_sample_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ayu7_sample_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="ayu7_sample_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="ayu7_sample_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="ayu7_sample_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#problem-1" id="toc-problem-1" class="nav-link active" data-scroll-target="#problem-1">Problem 1</a></li>
+  <li><a href="#solution" id="toc-solution" class="nav-link" data-scroll-target="#solution">Solution</a></li>
+  <li><a href="#problem-2" id="toc-problem-2" class="nav-link" data-scroll-target="#problem-2">Problem 2</a></li>
+  <li><a href="#solution-1" id="toc-solution-1" class="nav-link" data-scroll-target="#solution-1">Solution</a></li>
+  <li><a href="#problem-3-optional" id="toc-problem-3-optional" class="nav-link" data-scroll-target="#problem-3-optional">Problem 3 (Optional)</a></li>
+  <li><a href="#solution-2" id="toc-solution-2" class="nav-link" data-scroll-target="#solution-2">Solution</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">AYU - Individual Week 7 - Sample Problems and Solutions</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="problem-1" class="level3">
+<h3 class="anchored" data-anchor-id="problem-1">Problem 1</h3>
+<p>Given the data.</p>
+<center>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Age</th>
+<th style="text-align: left;">Sex</th>
+<th style="text-align: left;">Survived</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">27</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">30</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">80</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">50</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">E</td>
+<td style="text-align: left;">60</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: left;">0</td>
+</tr>
+</tbody>
+</table>
+</center>
+<ol type="a">
+<li><p>Let F be a female of 40 years old. Use 1NN to predict whether F is survived (<code>Survived =1</code>) or not (<code>Survived = 0</code>). Does the prediction change if used 3NN</p></li>
+<li><p>Given the following data, use 1NN and 3NN to predict the salary for F.</p></li>
+</ol>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Age</th>
+<th style="text-align: left;">Sex</th>
+<th style="text-align: left;">Salary k</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">27</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">80</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">30</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: left;">70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">80</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: left;">90</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">50</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">60</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">E</td>
+<td style="text-align: left;">60</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: left;">10</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="solution" class="level3">
+<h3 class="anchored" data-anchor-id="solution">Solution</h3>
+<ol type="a">
+<li></li>
+</ol>
+<p>Step 1: Standardize the <code>Age</code> column.</p>
+<p><span class="math display">\[
+\text{Standardized} Age = \frac{Age-Age_{min}}{Age_{max}-Age_{min}} = \frac{Age - 27}{80-27}
+\]</span> We have the follows.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Age</th>
+<th style="text-align: left;">Sex</th>
+<th style="text-align: left;">Survived</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">0.057</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">0.434</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">E</td>
+<td style="text-align: left;">0.623</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">F</td>
+<td style="text-align: left;">0.245</td>
+<td style="text-align: left;">F</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p>Step 2: Calculate the distances from F to all the samples.</p>
+<p>We have <span class="math display">\[\begin{align*}
+AF &amp;= \sqrt{(0-0.245)^2+1^2} = 1.029575 \\
+BF &amp;= \sqrt{(0.057-0.245)^2+0^2} = 0.188 \\
+CF &amp;= \sqrt{(1-0.245)^2+0^2} = 0.755\\
+DF &amp;= \sqrt{(0.434-0.245)^2+1^2} = 1.017704\\
+EF &amp;= \sqrt{(0.623-0.245)^2+0^2} = 0.378
+\end{align*}\]</span></p>
+<p>We have BF &lt; EF &lt; CF &lt; DF &lt; AF. B is the nearest neighbor and B, E, C are the three nearest neighbor.</p>
+<p>Since the nearest neighbor of F is B (BF is the smallest between AF, BF, CF, DF, and EF), thus we predicts F has the same outcome as B, which is Survived.</p>
+<p>If we use 3NN, the prediction of F would be the majority outcome of the 3 nearest neighbors. The three nearest neighbor of F are B, E and C. The majority outcomes of B, E and C is still Survived. Thus, 3NN also predicts F Survived. The prediction does not change from 1NN to 3NN in this case.</p>
+<ol start="2" type="a">
+<li>Since the distances does not change, the neareast neighbors are still the same as part a.</li>
+</ol>
+<p>For 1NN, the predicted salary of F is the same as B, 70k.</p>
+<p>For 3NN, the predicted salary of F is the average salaries of B, E and C, which is: <span class="math inline">\(\frac{70+90+10}{3} = 56.67k\)</span></p>
+</section>
+<section id="problem-2" class="level3">
+<h3 class="anchored" data-anchor-id="problem-2">Problem 2</h3>
+<p>Given the data. Consider <span class="math inline">\(x\)</span> as 1 and <span class="math inline">\(o\)</span> as 0.</p>
+<p><img src="images/k241.png" class="img-fluid"></p>
+<ol type="a">
+<li>Use the <strong>uniform weights</strong> to calculate the predicted probability and the prediction of <strong>3NN</strong> for D.</li>
+<li>Use the <strong>distance weights</strong> to calculate the predicted probability and the prediction of <strong>3NN</strong> for D.</li>
+</ol>
+</section>
+<section id="solution-1" class="level3">
+<h3 class="anchored" data-anchor-id="solution-1">Solution</h3>
+<ol type="a">
+<li><img src="images/k231.png" class="img-fluid"></li>
+</ol>
+<p>Notice that if the probability is greater or equal to 1/2, we predict x.</p>
+<ol start="2" type="a">
+<li><img src="images/k25.png" class="img-fluid"></li>
+</ol>
+</section>
+<section id="problem-3-optional" class="level3">
+<h3 class="anchored" data-anchor-id="problem-3-optional">Problem 3 (Optional)</h3>
+<p>Given the utility matrix</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Item 1</th>
+<th style="text-align: left;">Item 2</th>
+<th style="text-align: left;">Item 3</th>
+<th style="text-align: left;">Item 4</th>
+<th style="text-align: left;">Item 5</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Alice</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">User 1</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">User 2</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">User 3</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">User 4</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">1</td>
+</tr>
+</tbody>
+</table>
+<p>Should we recommend Item 5 to Alice? Calculate her estimated rating on Item 5 to answer the question. Recommend the item if Alice’s rating is 4 or above.</p>
+<ol type="a">
+<li><p>Use user-based KNN, with <span class="math inline">\(k=2\)</span> and Manhantan distance.</p></li>
+<li><p>Use item-based KNN, with <span class="math inline">\(k=2\)</span> and cosine similarity.</p></li>
+</ol>
+</section>
+<section id="solution-2" class="level3">
+<h3 class="anchored" data-anchor-id="solution-2">Solution</h3>
+<ol type="a">
+<li>We calculate the Manhantance distance from Alice to other users. Let <span class="math inline">\(d_{A1}\)</span> be the Manhantan distance from Alice to User 1 (exclude Item 5). We have.</li>
+</ol>
+<p><span class="math display">\[
+d_{A1} = |5-3|+|3-1|+|4-2|+|4-3| = 7
+\]</span> Similarly,</p>
+<p><span class="math display">\[
+d_{A2} = |5-4|+|3-3|+|4-4|+|4-3| = 2 \]</span> <span class="math display">\[ d_{A3} = |5-3|+|3-3|+|4-1|+|4-4| = 5 \]</span> <span class="math display">\[ d_{A4} = |5-1|+|3-5|+|4-5|+|4-2| = 9. \\
+\]</span></p>
+<p>Thus, the two nearest neighbors are User 2 and User 3. Alice’s rating on Item 5 is predicted as the average ratings of these two Users on Item 5, which is (5+4)/2= 4.5.</p>
+<p>We recommend this Item to Alice.</p>
+<ol start="2" type="a">
+<li>We calculate the cosine similarities of Item 5 to other items (excluding Alice). Let <span class="math inline">\(s_{51}\)</span> be the cosine similarity of Item 5 and Item 1. We have.</li>
+</ol>
+<p><span class="math display">\[
+s_{51} = \frac{3\cdot 3 + 5\cdot4 + 4\cdot3 +1\cdot 1}{\sqrt{3^2+5^2+4^2+1^2}\cdot \sqrt{3^2+4^2+3^2+1^2}} = 0.9941
+\]</span> Similarly,</p>
+<p><span class="math display">\[
+s_{52} = 0.7388 \]</span> <span class="math display">\[
+s_{53} = 0.7226 \]</span> <span class="math display">\[
+s_{54} = 0.9540
+\]</span></p>
+<p>Since <span class="math inline">\(s_{51}\)</span> and <span class="math inline">\(s_{54}\)</span> are the largest, the two nearest neighbors (largest similarities) of Item 5 are Item 1 and Item 4. Alice’s rating on Item 5 is predicted as the average ratings of her ratings for Item 1 and Item 4, which is (5+4)/2= 4.5.</p>
+<p>We also recommend this Item to Alice.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

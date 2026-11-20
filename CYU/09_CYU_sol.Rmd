@@ -1,0 +1,66 @@
+---
+title: "Week 9 - Check Your Understanding"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Principal Component Analysis can be used to reduce the dimension of a large dataset without losing much information
+    
+    *a. True
+    
+    b. False
+    
+2. Principal component analysis should be used on dataset with categorical variables 
+
+    a. True
+    
+    *b. False
+
+3. The first principal should contain the most amount of variance in the original data
+    
+    *a. True
+    
+    b. False
+
+4. The second principal is always orthogonal to the first principal component. 
+    
+    *a. True
+    
+    b. False
+
+5.  One should not normalize the date before applying principal component analysis
+    
+    *a. True
+    
+    b. False
+
+6. We do not need to have any assumption of the distribution of the data to use principal component analysis
+    
+    *a. True
+    
+    b. False
+
+7. One should only use the first principal component to move forward with the data analysis
+
+    a. True
+    
+    *b. False
+
+8. The number of component should always be a half of the number of the original variables
+
+    a. True
+    
+    *b. False
+    
+
+9. Principal component analysis can be used for data visualization 
+
+    *a. True
+    b. False
+    

@@ -1,0 +1,361 @@
+---
+title: "Hierarchical Clustering"
+format: beamer
+editor: visual
+---
+
+# Hierarchical clustering - Centroid Linkage
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+euc.dist = function(x1, x2){sqrt(sum((x1 - x2) ^ 2))}
+
+# Use this example for non-unique solution
+# d1 = as_tibble(data.frame(
+#   x1 = c(1, 2, 3, 4, 15, 10, 11, 11, 12, 15, 11, 10, 20, 30, 25, 22, 29, 20, 31, 44, 17, 18, 19, 20), 
+#   x2 = c(5, 6, 8, 8, 4,  20, 22, 27, 30, 23, 10, 15, 33, 44, 19, 14, 19, 22, 19, 20, 44, 11, 22, 37)))
+
+d1 = as_tibble(data.frame(
+     x1 = c(0,  2,  5,   9,    10,  5.5,  10), 
+     x2 = c(6,    7,  9.5, 2.5,  3,   9,    4),
+  cluster = c("A","B", "C",  "D",  "E", "F", "G")))
+
+row.names(d1) = d1$cluster
+
+ggplot(data = d1, aes(x = x1, y=x2, label = cluster))+
+  geom_point()+
+  coord_fixed()+
+  xlim(0, 10)+
+  ylim(0,10)
+```
+
+# Label the Points
+
+```{r}
+ggplot(data = d1, aes(x = x1, y=x2, label = cluster))+
+  geom_point()+
+  geom_label()+
+  coord_fixed()+
+  xlim(0, 10)+
+  ylim(0,10)
+```
+
+# Identify the pair with the smallest distance.
+
+```{r}
+h_cluster <- function(dd, plot_pair = TRUE, plot_group = TRUE)
+{
+  m = dist(as.matrix(dd[,c(1,2)]))
+  min_dist = min(m)
+  m = as.matrix(m)
+  ind = which(m==min_dist, arr.ind=TRUE)
+  cluster_new = dd[ind[2,],] %>% select(-cluster) %>% summarise_all(mean)
+  cluster_new$cluster = paste(dd$cluster[ind[2,]],collapse = '')
+  r = rbind(dd[-ind[2,],],cluster_new)
+  
+  
+  library(tidyverse)
+  library(ggplot2)
+  
+  if(plot_pair)
+  {
+  p1 <-  ggplot(data = dd, aes(x = x1, y=x2, label = cluster, show.legend = FALSE))+
+  geom_point()+
+  geom_label()+
+  coord_fixed()+
+  # geom_point(data = dd[ind[2,],], aes(x=x1, y=x2),  color = 'red')+ 
+  geom_label(data = dd[ind[2,],], aes(color = 'red'), show.legend = FALSE)+
+  coord_fixed()+
+  xlim(0, 10)+
+  ylim(0,10)
+  print(p1) 
+  }
+  
+  if(plot_group)
+  {
+    p2 <-  ggplot(data = r, aes(x = x1, y=x2, label = cluster, show.legend = FALSE))+
+  geom_point()+
+  geom_label()+
+  coord_fixed()
+  print(p2) 
+  }
+  
+  return(r)
+}
+
+# break downs h_cluster functions into three functions for simplicity
+
+h_cluster2 <- function(dd)
+{
+   library(tidyverse)
+  m = dist(as.matrix(dd[,c(1,2)]))
+  min_dist = min(m)
+  m = as.matrix(m)
+  ind = which(m==min_dist, arr.ind=TRUE)
+  cluster_new = dd[ind[2,],] %>% select(-cluster) %>% summarise_all(mean)
+  cluster_new$cluster = paste(dd$cluster[ind[2,]],collapse = '')
+  r = rbind(dd[-ind[2,],],cluster_new)
+  return(r)
+}
+
+plot_pair <- function(dd)
+{
+  library(tidyverse)
+  library(ggplot2)
+  m = dist(as.matrix(dd[,c(1,2)]))
+  min_dist = min(m)
+  m = as.matrix(m)
+  ind = which(m==min_dist, arr.ind=TRUE)
+  
+  p1 <-  ggplot(data = dd, aes(x = x1, y=x2, label = cluster, show.legend = FALSE))+
+  geom_point()+
+  geom_label()+
+  coord_fixed()+
+  # geom_point(data = dd[ind[2,],], aes(x=x1, y=x2),  color = 'red')+ 
+  geom_label(data = dd[ind[2,],], aes(color = 'red'), show.legend = FALSE)+
+  coord_fixed()+
+  xlim(0, 10)+
+  ylim(0,10)
+  print(p1) 
+
+}
+
+plot_group <- function(dd)
+{
+  library(tidyverse)
+  library(ggplot2)
+  
+  m = dist(as.matrix(dd[,c(1,2)]))
+  min_dist = min(m)
+  m = as.matrix(m)
+  ind = which(m==min_dist, arr.ind=TRUE)
+  cluster_new = dd[ind[2,],] %>% select(-cluster) %>% summarise_all(mean)
+  cluster_new$cluster = paste(dd$cluster[ind[2,]],collapse = '')
+  r = rbind(dd[-ind[2,],],cluster_new)
+  
+  p2 <-  ggplot(data = r, aes(x = x1, y=x2, label = cluster, show.legend = FALSE))+
+  geom_point()+
+  geom_label()+
+  coord_fixed()+
+  xlim(0, 10)+
+  ylim(0,10)
+  print(p2) 
+}
+
+h_cluster3 <- function(dd)
+{
+  # output the min distance for graphing
+   library(tidyverse)
+  m = dist(as.matrix(dd[,c(1,2)]))
+  min_dist = min(m)
+  return(round(min_dist,2))
+}
+
+```
+
+```{r}
+d2 <-  d1
+plot_pair(d2)
+```
+
+# Group the pair
+
+```{r}
+plot_group(d2)
+```
+
+# Identify the pair with the smallest distance.
+
+```{r}
+d2 <- h_cluster2(d2)
+plot_pair(d2)
+```
+
+# Group the pair
+
+```{r}
+plot_group(d2)
+```
+
+# Identify the pair with the smallest distance.
+
+```{r}
+d2 <- h_cluster2(d2)
+plot_pair(d2)
+```
+
+# Group the pair
+
+```{r}
+plot_group(d2)
+```
+
+# Identify the pair with the smallest distance.
+
+```{r}
+d2 <- h_cluster2(d2)
+plot_pair(d2)
+```
+
+# Group the pair
+
+```{r}
+plot_group(d2)
+```
+
+# Identify the pair with the smallest distance.
+
+```{r}
+d2 <- h_cluster2(d2)
+plot_pair(d2)
+```
+
+# Group the pair
+
+```{r}
+plot_group(d2)
+```
+
+# Identify the pair with the smallest distance.
+
+```{r}
+d2 <- h_cluster2(d2)
+plot_pair(d2)
+```
+
+# Group the pair
+
+```{r}
+plot_group(d2)
+```
+
+# Dendrogram
+
+```{r}
+d2 <-  d1
+plot_pair(d2)
+
+```
+
+-   Distance: `r h_cluster3(d2)`
+
+# Group the pair
+
+```{r}
+plot_group(d2)
+```
+
+-   Distance: `r h_cluster3(d2)`
+
+# Identify the pair with the smallest distance.
+
+```{r}
+d2 <- h_cluster2(d2)
+plot_pair(d2)
+```
+
+-   Distance: `r h_cluster3(d2)`
+
+# Group the pair
+
+```{r}
+plot_group(d2)
+```
+
+-   Distance: `r h_cluster3(d2)`
+
+# Identify the pair with the smallest distance.
+
+```{r}
+d2 <- h_cluster2(d2)
+plot_pair(d2)
+```
+
+-   Distance: `r h_cluster3(d2)`
+
+# Group the pair
+
+```{r}
+plot_group(d2)
+```
+
+-   Distance: `r h_cluster3(d2)`
+
+# Identify the pair with the smallest distance.
+
+```{r}
+d2 <- h_cluster2(d2)
+plot_pair(d2)
+```
+
+-   Distance: `r h_cluster3(d2)`
+
+# Group the pair
+
+```{r}
+plot_group(d2)
+```
+
+-   Distance: `r h_cluster3(d2)`
+
+# Identify the pair with the smallest distance.
+
+```{r}
+d2 <- h_cluster2(d2)
+plot_pair(d2)
+```
+
+-   Distance: `r h_cluster3(d2)`
+
+# Group the pair
+
+```{r}
+plot_group(d2)
+```
+
+-   Distance: `r h_cluster3(d2)`
+
+# Identify the pair with the smallest distance.
+
+```{r}
+d2 <- h_cluster2(d2)
+plot_pair(d2)
+```
+
+-   Distance: `r h_cluster3(d2)`
+
+# Group the pair
+
+```{r}
+plot_group(d2)
+```
+
+-   Distance: `r h_cluster3(d2)`
+
+# Dendrogram
+
+# Linkages
+
+![](28.png)
+
+# Example
+
+You are given the following four pairs of observations: $x_1$ = (1,0), $x_2$ = (1,1), $x_3$ = (2, 1), and $x_4$ = (5,10).
+
+Calculate the intercluster dissimilarity between ${x_1,x_2}$ and $x_4$ with different linkages and Euclidean distance.
+
+```{=html}
+<!--
+
+# Example
+
+![](29.png){width=40%}
+
+Draw the dendrogram of the hierarchical cluster for the data.
+
+# Example
+
+-->
+```

@@ -1,0 +1,3 @@
+$$
+\text{heart_disease} = \beta_0 + \beta_1\cdot \text{biking} + \beta_2\cdot \text{smoking} + \epsilon
+$$

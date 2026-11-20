@@ -1,0 +1,884 @@
+---
+title: "Time Series"
+format: 
+  beamer
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# 1. What is a time series
+
+-   A time series is a sequence of observation taken over time
+
+# 
+
+```{r}
+# define data
+library(ggfortify)
+library(tidyverse)
+library(xts)
+library(fpp2)
+library(TTR)
+sales=BJsales
+earnings=JohnsonJohnson
+nile=Nile
+url="http://www.cru.uea.ac.uk/cru/data/temperature/CRUTEM3v-gl.dat"
+f=read.table(url,fill=TRUE)
+ny=nrow(f)/2;x=c(t(f[2*1:ny-1,2:13]))
+temperature=ts(x,start=2019,frequency=12,end=c(2020,1))
+autoplot(temperature)+ ggtitle("World Temperature")
+```
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Stationary
+\end{center}
+```
+# 2. Stationary
+
+-   A time series $y_t$ is stationary if
+
+    -   $E(y_t) = constant$
+
+    -   $Cov(y_t, y_s)$ only depends on the time lag $|t-s|$
+
+-   If $y_t$ is stationary then $Var(y_t) = Constant$
+
+# Example
+
+```{r}
+set.seed(30)
+n = 100
+e <- ts(rnorm(n, sd = 10))
+t = c(1:n)
+y = 2*t+3+e
+library(ggfortify)
+autoplot(y) + ggtitle("")
+```
+
+# Example
+
+```{r}
+set.seed(30)
+n = 100
+e <- ts(rnorm(n, sd = 10))
+t = c(1:n)
+y = 2*t+3+e
+library(ggfortify)
+autoplot(y) + ggtitle("Non-stationary due to non-constant expected value")
+```
+
+# Example
+
+```{r}
+set.seed(30)
+n = 100
+e1 <- rnorm(n, sd = 1)
+e2 <- rnorm(n, sd = 10)
+e3 <- rnorm(n, sd = 50)
+y = c(e1,e2,e3)
+library(ggfortify)
+autoplot(ts(y)) + ggtitle("")
+```
+
+# Example
+
+```{r}
+set.seed(30)
+n = 100
+e1 <- rnorm(n, sd = 1)
+e2 <- rnorm(n, sd = 10)
+e3 <- rnorm(n, sd = 50)
+y = c(e1,e2,e3)
+library(ggfortify)
+autoplot(ts(y)) + ggtitle("Non-stationary due to non-constant variance")
+```
+
+# 
+
+```{r}
+set.seed(10)
+y <- ts(rnorm(200))
+library(ggfortify)
+autoplot(y) + ggtitle("")
+```
+
+# 
+
+```{r}
+set.seed(10)
+y <- ts(rnorm(200))
+library(ggfortify)
+autoplot(y) + ggtitle("A Stationary Time Series")
+```
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge White Noise
+\end{center}
+```
+# 3. White Noise
+
+-   $y_t$ is a white-noise process (series) if $y_1$, $y_2$,...$y_t$... are i.i.d random variables from a certain distribution (usually normal)
+
+-   A White noise is stationary
+
+# Example
+
+```{r}
+set.seed(30)
+y <- ts(rnorm(100))
+library(ggfortify)
+autoplot(y) + ggtitle("White noise of Standard Normal Distribution")
+```
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Random Walk
+\end{center}
+```
+# 4. Random Walk
+
+-   A time series $y_t$ is called a random walk if
+
+    $$y_{t} =  y_{t-1} + c_t,$$
+
+    where $c_t$ is a white-noise
+
+-   A random walk can be written as
+
+$$
+y_t = y_0 + c_1 + c_2 +...+c_t
+$$
+
+# Example
+
+```{r}
+set.seed(1)
+n <- 5
+ct = sample(c(-1, 1), n, TRUE)
+x <- cumsum(c(0,ct))
+autoplot(ts(x))
+```
+
+# Example
+
+```{r}
+set.seed(1)
+n <- 10
+ct = c(0, sample(c(-1, 1), n, TRUE))
+x <- cumsum(ct)
+autoplot(ts(x))
+```
+
+# Example
+
+```{r}
+set.seed(30)
+n = 1000
+c <- rnorm(n, mean = 0.1)
+y_0 = 0
+y = c(y_0, 2:n)
+
+for (i in 2:n)
+{
+  y[i] = y[i-1]+c[i]
+}
+
+library(ggfortify)
+library(latex2exp)
+
+autoplot(ts(y)) + ggtitle("A random walk")
+```
+
+# Some Properties
+
+-   If $c_t \sim (\mu_c, \sigma^2_c)$, then
+
+$$E(y_t) = E(y_0 + c_1 + c_2 +...+c_t = y_0 + t\mu_c,$$ and
+
+$$V(y_t) =  t\sigma^2_c$$
+
+-   A random walk is non-stationary (unless the associated white-noise is non-random, i.e. $\mu_c = \sigma^2_c = 0$)
+
+$$Cov(y_t, y_s) = s\sigma^2_c$$
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Forecasting with Random Walks
+\end{center}
+```
+# Forecasting with Random Walks
+
+Suppose that we know $y_0, y_1, ..., y_T$ and we want to forecast $y_{T+l}$ for some fixed $l>0$
+
+-   Point forecast: the estimated $l$ step-ahead is
+
+$$
+\hat{y}_{T+l} = y_T + l\hat{\mu}_{c},
+$$ where $\hat{\mu}_{c}$ is the estimated mean of the white-noise. $\hat{\mu}_{c}$ can be $\bar{c}$
+
+$$\bar{c} = \frac{c_1 + c_2 + ...+c_T}{T}$$
+
+-   The standard error of the forecast is $s_c\sqrt{l}$, where $s_c$ is the estimated standard deviation of $\sigma_c$,
+
+$$
+s^2_c = \frac{1}{n-1}\sum_{i=1}^{T} \big(c_i - \bar{c}\big)^2
+$$
+
+# 
+
+### Example
+
+You are given:
+
+i)  The random walk model
+
+$$
+y_t =  y_0 + c_1 + c_2 + c_3 +...+c_t,
+$$
+
+where $c_i, (i = 1, 2,..., t)$ denote observations from a white noise process.
+
+ii) The following ten observed values of $c_t$:
+
+| t     | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  |
+|:------|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|
+| $y_t$ | 2   | 5   | 10  | 13  | 18  | 20  | 24  | 25  | 27  | 30  |
+
+iii) $y_0 = 0$
+
+Calculate the 9 step-ahead forecast, $\hat{y}_{19}$.
+
+# 
+
+# 
+
+### Example
+
+You are given:
+
+i)  The random walk model
+
+$$
+y_t =  y_0 + c_1 + c_2 + c_3 +...+c_t,
+$$
+
+where $c_i, (i = 1, 2,..., t)$ denote observations from a white noise process.
+
+ii) The following ten observed values of $c_t$:
+
+| t     | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  |
+|:------|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|
+| $y_t$ | 2   | 5   | 10  | 13  | 18  | 20  | 24  | 25  | 27  | 30  |
+
+iii) $y_0 = 0$
+
+Calculate the standard error of the 9 step-ahead forecast, $\hat{y}_{19}$.
+
+# 
+
+We have $c_t = y_t -y_{t-1} \implies c_1, c_2, ..., c_{10} = 2,3,5,3,5, 2, 4,1, 2,3$
+
+$$ \implies \bar{c} = \frac{c_1 + c_2 + ...+c_{10}}{10} = 3$$
+
+$$
+\implies s^2_c = \frac{1}{9}\sum_{i=1}^{10} \big(c_i - 3\big)^2 = 16/9
+$$ Hence, the standard error is $s_c\sqrt{l} = \frac{4}{3}\sqrt{9} = 4$
+
+# 
+
+### Example
+
+You are given the following eight observations from a time series that follows a random walk model:
+
+| $t$   | 0   | 1   | 2   | 3   | 4   | 5   | 6   | 7   |
+|:------|:----|:----|:----|:----|:----|:----|:----|:----|
+| $y_t$ | 3   | 5   | 7   | 8   | 12  | 15  | 21  | 22  |
+
+You plan to fit this model to the first five observations and then evaluate it against the last three observations using one-step forecast residuals. The estimated mean of the white noise process is 2.25.
+
+Calculate the mean error (ME) of the three predicted observations.
+
+# 
+
+We have $\hat{\mu}_{c} = 2.25$. Notice that we are forced to use one-step ahead estimation to calculate $\hat{y}_5, \hat{y}_6, \hat{y}_7$. Thus, we need to use $y_4$ to estimate $\hat{y}_5$, $y_5$ to estimate $\hat{y}_6$, and $y_6$ to estimate $\hat{y}_7$. We have \begin{align*}
+    \hat{y}_5 &= y_4 + \hat{\mu}_{c} = 12 + 2.25 = 14.25\\
+    \hat{y}_6 &= y_5 + \hat{\mu}_{c} = 15 + 2.25 = 17.25\\
+    \hat{y}_7 &= y_6 + \hat{\mu}_{c} = 21+ 2.2.5 = 23.25\\
+\end{align*} Hence, the ME error is \begin{align*}
+ME  &= \frac{1}{3} \big(y_{15} - \hat{y}_{15} + y_{16} - \hat{y}_{16} + y_{17} - \hat{y}_{17} \big)\\
+ &= 15 - 14.25 + 21-17.25+22 -23.25\\
+ &= 1.083
+\end{align*}
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Autoregressive model
+\end{center}
+```
+
+# 5. Autoregressive model
+
+-   A time series $y_t$ is called a *first-order autoregressive model*, or AR(1) if
+
+$$y_{t} = \beta_0 + \beta_1 y_{t-1} + \epsilon_t,$$
+
+where $|\beta_1| \leq 1$, $\epsilon_t$ is a zero mean white-noise process and $\epsilon_{t+k}$ is independent of $y_t$ for any $t >0$ and $k>0$.
+
+# 
+
+-   When $\beta_1 = 1$, AR(1) becomes a random walk model.
+
+-   When $\beta_1 = 0$, AR(1) becomes a white noise.
+
+-   when $|\beta_1|<1$, AR(1) is stationary and vice versa
+
+# 
+
+```{r}
+set.seed(2023)
+n = 1000
+y = rep(0, n)
+
+y[1] = 0
+b0 = 0
+b1 = .01
+e = rnorm(n, sd = 1)
+
+for (t in 2:n)
+{
+  y[t] = b0 + b1*y[t-1]+e[t]
+}
+
+autoplot(ts(y)) + ggtitle(paste0("An Autoregressive series with beta1 = ",b1))
+
+```
+
+# 
+
+```{r}
+set.seed(2023)
+n = 1000
+y = rep(0, n)
+
+y[1] = 0
+b0 = 0
+b1 = .5
+e = rnorm(n, sd = 1)
+
+for (t in 2:n)
+{
+  y[t] = b0 + b1*y[t-1]+e[t]
+}
+
+autoplot(ts(y)) + ggtitle(paste0("An Autoregressive series with beta1 = ",b1))
+
+```
+
+# 
+
+```{r}
+set.seed(2023)
+n = 1000
+y = rep(0, n)
+
+y[1] = 0
+b0 = 0
+b1 = .9
+e = rnorm(n, sd = 1)
+
+for (t in 2:n)
+{
+  y[t] = b0 + b1*y[t-1]+e[t]
+}
+
+autoplot(ts(y)) + ggtitle(paste0("An Autoregressive series with beta1 = ",b1))
+
+```
+
+# 
+
+```{r}
+set.seed(2023)
+n = 1000
+y = rep(0, n)
+
+y[1] = 0
+b0 = 0
+b1 = 1
+e = rnorm(n, sd = 1)
+
+for (t in 2:n)
+{
+  y[t] = b0 + b1*y[t-1]+e[t]
+}
+
+autoplot(ts(y)) + ggtitle(paste0("An Autoregressive series with beta1 = ",b1))
+
+```
+
+# 
+
+```{r}
+set.seed(2023)
+n = 1000
+y = rep(0, n)
+
+y[1] = 0
+b0 = 0
+b1 = 1.01
+e = rnorm(n, sd = 1)
+
+for (t in 2:n)
+{
+  y[t] = b0 + b1*y[t-1]+e[t]
+}
+
+autoplot(ts(y)) + ggtitle(paste0("An Autoregressive series with beta1 = ",b1))
+
+```
+
+# Properties: Expectation
+
+-   Assume we have a stationary AR(1). Thus, $E(y_{t}) = E(y_{t-1})$. Therefore, \begin{align*}
+      E(y_{t}) &= E\bigg(\beta_0 + \beta_1 y_{t-1} + \epsilon_t\bigg)\\
+      &= \beta_0 + \beta_1 E(y_{t-1}) \\
+      &= \beta_0 + \beta_1 E(y_{t})\\
+      \implies E(y_t) &=\frac{\beta_0}{1-\beta_1} \\
+    \end{align*}
+
+# Properties: Variance
+
+-   Since we have a stationary AR(1), $V(y_{t}) = V(y_{t-1})$. Therefore, \begin{align*}
+      V(y_{t}) &= V\bigg(\beta_0 + \beta_1 y_{t-1} + \epsilon_t\bigg)\\
+      &= \beta^2_1 V(y_{t-1}) + \sigma^2_{\epsilon}\\
+      &= \beta^2_1 V(y_{t})+ \sigma^2_{\epsilon}\\
+      \implies V(y_t) &=\frac{\sigma^2_{\epsilon}}{1-\beta^2_1} \\
+    \end{align*}
+
+# Parameter Estimation
+
+-   AR(1) is very similar to linear model where $y_{t-1}$ play the roles of the predictor and $y_{t}$ is the response
+
+-   In linear model, the predictor $x$ is assumed to be non-random while the predictor $y_{t-1}$ is non-random in AR(1)
+
+-   We estimate $\beta_0$ and $\beta_1$ by minimizing
+
+$$
+\sum_{t=2}^T\bigg(y_t-E(y_t|y_{t-1})\bigg)^2 = \sum_{t=2}^T\bigg(y_t-\beta_0-\beta_1y_{t-1}\bigg)^2
+$$
+
+-   These estimators are called the conditional least squares estimators
+
+# 
+
+The coefficients are estimated by \begin{align*}
+    \hat{\beta}_1 &= \frac{\sum_{t=2}^T(y_{t-1}-\bar{y})(y_t-\bar{y})}{\sum^T_{t=2}(y_t-\bar{y})^2}\\
+    \hat{\beta}_0 &= \bar{y}(1-\hat{\beta_1})
+\end{align*}
+
+The only parameter left to estimate is the error variance, $\sigma^2_{\epsilon}$, (error mean is zero), which can be estimated by $s^2$ \begin{align*}
+s^2 &= \frac{\sum_{t=2}^T(e_t-\bar{e})^2}{T-3}
+\end{align*}
+
+where $e_t = y_t - (\hat{\beta}_0-\hat{\beta}_1y_{t-1})$.
+
+# Example
+
+You are given the following six observed values of the autoregressive model of order one time series
+
+$$
+y_t = \beta_0 + \beta_1 y_{t-1} + \epsilon_t, \text{ with   }  Var(\epsilon_t) = \sigma^2.
+$$
+
+| $t$   | 1   | 2   | 3   | 4   | 5   |
+|:------|:----|:----|:----|:----|:----|
+| $y_t$ | 1   | 3   | 5   | 8   | 13  |
+
+Calculate $\hat{\beta}_1$ using the conditional least squares method.
+
+# 
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Forecasting with AR(1)
+\end{center}
+```
+# 
+
+-   Suppose we have the AR(1) time series with known $\beta_0$ and $\beta_1$. If these parameters are unknown we can estimate them by the formula in the previous slices.
+
+-   We use the following formulas to for forecasting
+
+$$
+\hat{y}_{T+1} = \beta_0 + \beta_1 y_T
+$$
+
+$$
+\hat{y}_{T+k} = \mu + \beta_1^k(y_T - \mu)
+$$
+
+where $\mu = \frac{\beta_0}{1- \beta_1}$.
+
+# Example
+
+You are given \begin{align*}
+y_t &= .3y_{t-1} + 4 + \epsilon \\
+y_T &= 7
+\end{align*} Calculate the three step ahead forecast of $y_{T+3}$
+
+# 
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Smoothing
+\end{center}
+```
+# 6. Smoothing
+
+-   Smoothing is usually done to reveal the series patterns and trends.
+
+# Simple Moving Average Smoothing
+
+-   Moving Average (MA) creates a new series by averaging the most recent observations from the original series.
+
+-   MA(k) creates $s_t$ as follows.
+
+$$
+s_{t} = \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}
+$$
+
+-   Larger $k$ will smooth the series more strongly
+
+# 
+
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 8
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Medical Component of the CPI"))
+```
+
+# 
+
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 4
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 8
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+d <- read_csv('data/MedCPISmooth.csv')
+t1 = ts(d$PerMEDCPI, start = c(1947, 1), frequency = 4)
+k = 16
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+t1 = read_csv("beer.csv")
+t1 = ts(t1, start = c(1956, 1), freq = 4)
+k = 1
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Original Series"))
+```
+
+# 
+
+```{r}
+## Data 1
+t1 = read_csv("beer.csv")
+t1 = ts(t1, start = c(1956, 1), freq = 4)
+k = 2
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+k = 5
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+k = 12
+t1_sma = SMA(t1, n = k)
+plot(t1, main = paste0("Moving average with k = ",k))
+lines(t1_sma, col = "red")
+```
+
+# Forecasting
+
+-   We can use smoothing for forecasting
+
+-   We have \begin{align*}
+    \hat{s}_t &= \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}\\
+    &=\frac{y_t + y_{t-1} +...+ y_{t-k+1}+y_{t-k}-y_{t-k}}{k}\\
+    &=\frac{y_t + \bigg(y_{t-1} +...+ y_{t-k+1}+y_{t-k}\bigg)-y_{t-k}}{k}\\
+    &= \frac{y_t + k\hat{s}_{t-1}-y_{t-k}}{k}\\
+    &= \hat{s}_{t-1} + \frac{y_t-y_{t-k}}{k}
+    \end{align*}
+
+# Forecasting
+
+-   If there is no trend in $y_t$ the second term $(y_t-y_{t-k})/k$ can be ignored
+-   Forecasting $l$ lead time into future by
+
+$$
+\hat{y}_{T+l} = \hat{s}_T
+$$
+
+-   If there is a linear trend in a series, we can use the double moving average to estimate the trend (slope)
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Double MA
+\end{center}
+```
+# 7. Double MA
+
+-   Linear trend time series: $$
+    y_t = \beta_0 + \beta_1t +\epsilon_t
+    $$
+
+-   Step 1: Smooth the series $$
+    \hat{s}^{(1)}_{t} = \frac{y_t + y_{t-1} +...+ y_{t-k+1}}{k}
+    $$
+
+-   Step 2: Smooth the smoothed series $$
+    \hat{s}^{(2)}_{t} = \frac{\hat{s}^{(1)}_t + \hat{s}^{(1)}_{t-1} +...+ \hat{s}^{(1)}_{t-k+1}}{k}
+    $$
+
+-   Step 3: Calculate the trend $$
+    b_1 = \hat{\beta_1} =  \frac{2}{k-1}\bigg(\hat{s}_T^{(1)}-\hat{s}_T^{(2)}\bigg)
+    $$
+
+# Forecasting
+
+-   Forecasting $l$ lead time into future by $$
+    \hat{y}_{T+l} = \hat{s}_T + b_1 \cdot l
+    $$
+
+# 
+
+You are given the following time series
+
+| $t$   | 1   | 2   | 3   | 4   | 5   |
+|:------|:----|:----|:----|:----|:----|
+| $y_t$ | 1   | 3   | 5   | 8   | 13  |
+
+-   Forecasting $y_{7}$ using simple moving average with $k = 2$
+
+-   Forecasting $y_{7}$ using double moving average with $k = 2$
+
+# 
+
+# Example
+
+-   We simulate 100 data points ($T=100$) of $$
+    y_t = 1 +3t + \epsilon, 
+    $$ where, $\epsilon \sim N(0, 5^2)$.
+
+# 
+
+```{r}
+set.seed(2022)
+n = 100
+y = rep(0, n)
+
+y[1] = 0
+b0 = 1
+b1 = 3
+
+e = rnorm(n, sd = 5)
+
+for (t in 2:n)
+{
+  y[t] = b0 + b1*t+e[t]
+}
+
+k = 12 
+s1 = SMA(y, n = k)
+s2 = SMA(s1, n = k)
+
+
+b1_hat = 2*(s1[n]-s2[n])/(k-1)
+
+autoplot(ts(y)) + ggtitle("Original Series")
+```
+
+# 
+
+```{r}
+autoplot(ts(s1)) + ggtitle(paste0("MA Series with k = ",k))
+```
+
+# 
+
+```{r}
+autoplot(ts(s2)) + ggtitle(paste0("Double MA Series with k = ",k))
+```
+
+# 
+
+-   Using the above steps, the estimated trend is $b_1 = 2.92$
+
+-   The forecast for the next points from $y_{100}$ is
+
+$$
+    \hat{y}_{100+l} = \hat{s}_{100}+ b_1\cdot l = \hat{s}_{100}+ 2.92\cdot l
+$$
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Exponential Smoothing
+\end{center}
+```
+# Exponential Smoothing
+
+-   MA distributes the weight equally to the recent observations
+
+-   Exponential Smoothing controls the weights of the recent observations by $w$
+
+$$
+\hat{s}_{t} = \frac{y_t + wy_{t-1} + w^2y_{t-2} + ... + w^ty_0}{1/(1-w)}
+$$
+
+-   Smaller $w$ ($w \to 0$) gives higher weights to the more recent observations
+
+-   Smaller $w$ smooths the series more lightly.
+
+# Exponential Smoothing
+
+-   We have \begin{align*}
+    \hat{s}_{t} &= \hat{s}_{t-1} + (1-w)(y_t-\hat{s}_{t-1})\\
+    & = (1-w)y_t + w\hat{s}_{t-1}
+    \end{align*}
+
+-   When $w \to 0$, $\hat{s}_{t} \to y_t$, or little smoothing has taken
+
+# 
+
+```{r}
+## Data 1
+# In exponential smoothing, a higher ratio will weight more on the recent observation, 
+# ratio close to 1 will have a 100% weight on the most recent observation
+alpha = .9
+t1_ema = EMA(t1, ratio = alpha)
+plot(t1,  main = paste0("Exponential Smoothing with w = ", 1- alpha))
+lines(t1_ema, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+# In exponential smoothing, a higher ratio will weight more on the recent observation, 
+# ratio close to 1 will have a 100% weight on the most recent observation
+alpha = .5
+t1_ema = EMA(t1, ratio = alpha)
+plot(t1,  main = paste0("Exponential Smoothing with w = ", 1- alpha))
+lines(t1_ema, col = "red")
+```
+
+# 
+
+```{r}
+## Data 1
+# In exponential smoothing, a higher ratio will weight more on the recent observation, 
+# ratio close to 1 will have a 100% weight on the most recent observation
+alpha = .1
+t1_ema = EMA(t1, ratio = alpha)
+plot(t1,  main = paste0("Exponential Smoothing with w = ", 1- alpha))
+lines(t1_ema, col = "red")
+```
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Double Exponential Smoothing
+\end{center}
+```
+# Double Exponential Smoothing
+
+We can use double smoothing to identify the trend and forecast linear trend time series as follows.
+
+-   Step 1: Create a smoothed series: $\hat{s}^{(1)}_{t} = (1-w)y_t + w\hat{s}^{(1)}_{t-1}$
+
+-   Step 2: Create a double smoothed series: $\hat{s}^{(2)}_{t} = (1-w)\hat{s}^{(1)}_{t} + w\hat{s}^{(2)}_{t-1}$
+
+-   Step 3: Estimate the trend: $$
+    b_1 = \frac{1-w}{w}(\hat{s}^{(1)}_{T}-\hat{s}^{(2)}_{T})
+    $$
+
+-   Step 4: Forecast
+
+$$
+\hat{y}_{T+l} = 2\hat{s}^{(1)}_{T}-\hat{s}^{(2)}_{T}+b_1\cdot l
+$$
+
+# Example
+
+You are given the following time series
+
+| $t$   | 1   | 2   | 3   | 4   | 5   |
+|:------|:----|:----|:----|:----|:----|
+| $y_t$ | 1   | 3   | 5   | 8   | 13  |
+
+-   Forecasting $y_{7}$ using exponential smoothing with $w = .8$
+
+-   Forecasting $y_{7}$ using double exponential smoothing with $w = .8$
+
+# 

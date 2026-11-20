@@ -1,0 +1,65 @@
+---
+title: "Week 3 - Check Your Understanding"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Multiple linear model cannot incorporate a categorical response. 
+    
+    *a. True
+    
+    b. False
+    
+2. Multiple linear regression is a special case of generalized linear model with a link function being the identity function. 
+
+    *a. True
+    
+    b. False
+
+3.  A normal distribution is a special case of exponential distribution. 
+    
+    *a. True
+    
+    b. False
+
+4. The least squares method can be applied to solve for optimal estimations of model parameters for any generalized linear model. 
+    
+    a. True
+    
+    *b. False
+
+5. The maximum likelihood method can be used to solve for parameter estimations in linear regression. 
+    
+    *a. True
+    
+    b. False
+
+6. The sum squares decomposition of TSS = RSS + Reg SS also holds in generalized linear model. 
+    
+    a. True
+    
+    *b. False
+
+7. We can use AIC and BIC to decide how many predictors to include in the generalized linear model. 
+
+    *a. True
+    
+    b. False
+
+8. In logistic regression, the response mean can be interpreted as the probability that the response equals one or zero.  
+
+    *a. True
+    
+    b. False
+
+9. One wants to model a counting response, she/he should use 
+    
+    a. Probit Regression
+    
+    *b. Poisson Regression

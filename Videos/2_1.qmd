@@ -1,0 +1,330 @@
+---
+title: "Multiple Regression"
+format: beamer
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# 
+
+```{r}
+library(tidyverse)
+library(knitr)
+d1 <- read_csv('heart_data.csv')
+d = d1
+kable(head(d1, 15))
+```
+
+
+```{r, eval =FALSE}
+library(tidyverse)
+library(ggplot2)
+
+
+l1 <- lm(heart_disease ~ biking, data = d1)
+
+d1 = d1 %>%
+    bind_cols(
+        pred1 = predict(l1, data = d1)
+    )
+
+rss1 = sum((d1$heart_disease-d1$pred1)^2)
+
+p1 = d1 %>%
+    ggplot(aes(x = biking)) +
+    geom_point(aes(y = heart_disease), color = "red")
+
+p3 = d1 %>%
+    ggplot(aes(x = biking)) +
+    geom_point(aes(y = heart_disease), color = "red") +
+    geom_abline(intercept = coef(l1)[1], slope = coef(l1)[2],
+                color = "blue", linewidth = 1)+
+    geom_text(x = min(d1$biking)+.1, y = max(d1$heart_disease) - .1, label = paste0("R2 = ", round(summary(l1)$r.squared, 2)))
+    
+print(p1)
+```
+
+
+```{r}
+
+l2 <- lm(heart_disease ~ smoking, data = d1)
+
+
+d1 = d1 %>%
+    bind_cols(
+        pred2 = predict(l2, data = d1)
+    ) 
+
+rss2 = sum((d1$heart_disease-d1$pred2)^2)
+
+p1 = d1 %>%
+    ggplot(aes(x = smoking)) +
+    geom_point(aes(y = heart_disease), color = "red")
+
+p2 = d1 %>%
+    ggplot(aes(x = smoking)) +
+    geom_point(aes(y = heart_disease), color = "red") +
+    geom_abline(intercept = coef(l2)[1], slope = coef(l2)[2],
+                color = "blue", linewidth = 1)
+
+p3 = d1 %>%
+    ggplot(aes(x = smoking))+
+    geom_point(aes(y = heart_disease), color = "red") +
+    geom_abline(intercept = coef(l2)[1], slope = coef(l2)[2],
+                color = "blue", linewidth = 1)+
+    geom_text(x = min(d1$smoking)+.1, y = max(d1$heart_disease) - .1, label = paste0("R2 = ", round(summary(l2)$r.squared, 2)))
+
+```
+
+# Multiple Regression Model
+
+$$
+\text{heart_disease} = \beta_0 + \beta_1\cdot \text{biking} + \beta_2\cdot \text{smoking} + \epsilon
+$$
+-  $\epsilon \sim N(0, \sigma^2)$
+
+# Graphing the solution
+
+```{r}
+library("plot3D")
+
+x <- d1$smoking
+y <- d1$biking
+z <- d1$heart_disease
+
+# Compute the linear regression 
+fit <- lm(z ~ x + y)
+
+d1 = d1 %>%
+    bind_cols(
+        pred3 = predict(fit, data = d1)
+    ) 
+
+rss3 = sum((d1$heart_disease-d1$pred3)^2)
+
+# create a grid from the x and y values (min to max) and predict values for every point
+# this will become the regression plane
+grid.lines = 40
+x.pred <- seq(min(x), max(x), length.out = grid.lines)
+y.pred <- seq(min(y), max(y), length.out = grid.lines)
+xy <- expand.grid( x = x.pred, y = y.pred)
+z.pred <- matrix(predict(fit, newdata = xy), 
+                 nrow = grid.lines, ncol = grid.lines)
+
+# create the fitted points for droplines to the surface
+fitpoints <- predict(fit)
+
+# scatter plot with regression plane
+scatter3D(x, y, z, pch = 19, cex = 1,colvar = NULL, col="red", 
+          theta = 20, phi = 10, bty="b",
+          xlab = "smoking", ylab = "biking", zlab = "heart_disease",  
+          surf = list(x = x.pred, y = y.pred, z = z.pred,  
+                      facets = TRUE, fit = fitpoints, col=ramp.col (col = c("dodgerblue3","seagreen2"), n = 300, alpha=0.9), border="black"), main = paste0("RSS: ",round(rss3,2), ", R2 = ", round(summary(fit)$r.squared, 2)))
+```
+
+- heart_disease = 14.984658 + -0.2001331 $\cdot$ biking + 0.1783339 $\cdot$ smoking
+
+# Model Definition
+
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Parameters Estimation
+\end{center}
+```
+
+# 
+
+```{r, eval=FALSE}
+X = as.matrix(d[,c(1,2)])
+X = cbind(replicate(nrow(X), 1), X)
+y = as.matrix(d[,c(3)])
+```
+
+$$
+\hat{\beta} = (X'X)^{-1}X'y
+$$
+
+
+```{r, eval=FALSE}
+kable(X)
+```
+
+
+```{r, eval=FALSE}
+kable(solve(t(X)%*%X))
+```
+
+
+```{r, eval=FALSE}
+kable(solve(t(X)%*%X)%*%(t(X)%*%y))
+```
+
+
+
+# 
+
+```{r}
+library(jtools) 
+smoking <- d1$smoking
+biking <- d1$biking
+heart_disease <- d1$heart_disease
+
+fit2 = lm(heart_disease~biking+smoking)
+
+summ(fit2, digits = 3)
+```
+
+# 
+
+```{=tex}
+\begin{center}
+\Huge Goodness of Fit
+\end{center}
+```
+# 
+
+```{=tex}
+\begin{center}
+\Huge Colinearity
+\end{center}
+```
+# 
+
+```{r}
+library(tidyverse)
+library(knitr)
+library(corrplot)
+library(car)
+library(jtools)
+library(faraway)
+library(kableExtra)
+
+hip_model = lm(hipcenter ~ ., data = seatpos)
+
+seatpos %>%
+  kbl() %>% 
+      kable_styling(bootstrap_options = "striped", font_size = 8)
+```
+
+# 
+
+```{r}
+hip_model = lm(hipcenter ~ ., data = seatpos)
+summ(hip_model,  model.info = getOption("summ-model.info", FALSE))
+```
+
+# 
+
+-   F-test tells us that the model significant
+
+-   p-value for individual predictors tells us that they are not significant
+
+-   Ht and HtShoes has opposite effect on the seat position
+
+-   All of these seems counter-intuitive
+
+-   We are dealing with multilinearity
+
+# Multilinearity
+
+-   Multilinearity is when some of the predictors supply similar information to the response
+
+# Mutilinearity Diagnosis
+
+```{r}
+corrplot(cor(seatpos[, -c(9)]), method = "number", type = "upper", diag = FALSE)
+```
+
+# Some Observations
+
+-   Ht and HtShoes are 100% correlated. Thus we just need one of these variable to be in the model
+
+-   Ht and HtShoes are also very highly correlated to other predictors.
+
+# 
+
+-   Let's build a linear model among the predictors where HtShoes is the response.
+
+```{r}
+hip_model = lm(HtShoes ~ ., data = seatpos[,-c(9)])
+summ(hip_model,  model.info = getOption("summ-model.info", FALSE), digits = 5)
+```
+
+# 
+
+-   $R^2 = 0.99675$ means that 99.675% of variance of HtShoes are contained in the remaining predictors.
+
+-   This means, there is only $1-R^2 =$ 0.325% of variance of HtShoes is unique to HtShoes.
+
+-   Why we even need HtShoes in the model if it does not contribute much?
+
+# 
+
+-   $1-R^2$ is called the tolerance of the variance.
+
+-   The variance of Inflation Factor $VIF = \frac{1}{1-R^2}$
+
+-   We want predictors have higher tolerance (more than .1) and lower VIF (smaller than 10)
+
+# 
+
+```{r}
+summ(hip_model, model.info = getOption("summ-model.info", FALSE), vifs = TRUE)
+```
+
+# Another Example
+
+```{r}
+library(tidyverse)
+library(knitr)
+d1 <- read_csv('heart_data.csv')
+
+d1 %>%
+  kbl() %>% 
+      kable_styling(bootstrap_options = "striped")
+
+```
+
+# 
+
+```{r}
+
+set.seed(2023)
+e3 = rnorm(nrow(d1), mean=1, sd=1)
+d1 = d1 %>%
+    mutate(
+        x3 = 3*biking - 10*smoking + e3)
+fit = lm(heart_disease~biking+smoking, data = d1)
+summ(fit, vifs = TRUE)
+```
+
+# Creating multicolinearity
+
+-   We want to purposely create a new variable that colinear with the two original variables.
+
+-   $x3 = 3*biking - 10*smoking + \epsilon$, $\epsilon \sim N(0,1)$
+
+# Creating multicolinearity
+
+```{r}
+fit = lm(heart_disease~biking+smoking+x3, data = d1)
+summ(fit, vifs = TRUE)
+```
+
+# What to do?
+
+-   If the main goal of building the model is for prediction, then we do not need to do anything. Multuiconolinearity does not affect the predictive power of the model.
+
+-   Check if there is any duplicate predictor
+
+-   Remove redundant variable
+
+-   Use variable selections methods such as stepwise or LASSO
+
+-   Use methods to create new set of variables from the original variables, such as principal component analysis.

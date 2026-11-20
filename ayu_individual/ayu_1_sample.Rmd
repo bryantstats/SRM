@@ -1,0 +1,58 @@
+---
+title: "Week 1 - Sample AYU - Individual"
+output: html_document
+date: "2023-04-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+**Problem 2.**
+
+| x | 2 | 3 | 5 | 6 | 1 | 9 |
+|:---|:---|:---|:---|:---|:---|:---|
+| y | 1 | 4 | 6 | 4 | 4 | 3 |
+
+Write the equation of the best fitted line.
+
+A. $y = -3.3 + 0.08462x$ \
+B. $y = -3.3 - 0.08462x$ \
+C. $y = 0.08462 - 3.3x$ \
+D. $y = 0.08462 + 3.3x$ \
+E. $y = 3.3 + 0.08462x$
+
+```{r, echo = FALSE, eval=FALSE}
+x = c(2,	3,	5,	6,	1,	9)
+y = c(1,	4,	6,	4,	4,	3)
+lm(y~x)
+```
+
+**Problem 4.** 
+
+The regression model is $y=\beta_0 + \beta_1x+\epsilon$. There are 8 observations. The summary statistics are: 
+\begin{align} 
+\bar{y} &= 12.625, \\
+\bar{x}&=6,  \\
+\sum x_i^2 &= 390, \\ 
+\sum x_iy_i &= 753, \\
+\sum y_i^2 &= 1557
+\end{align}
+
+Write the equation of the best fitted line.
+
+```{r, echo=FALSE}
+x = c(1,2,5,7,9, 10, 3, 11)
+y = c(3, 6, 10, 11,15,20, 15, 21)
+```
+
+A. $y = 3.978-1.441x$ \
+B. $y = -3.978-1.441x$ \
+C. $y = 1.441+3.978x$ \
+D. $y = 1.441-3.978x$ \
+E. The correct answer is not given by (A), (B), (C), or (D).
+
+
+

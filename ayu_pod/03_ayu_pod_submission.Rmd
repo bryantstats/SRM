@@ -1,0 +1,36 @@
+
+---
+title: "Week 3 - AYU - Pod"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: united
+  word_document:
+    toc: yes
+---
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Questions
+
+Adding code chunks (Ctrl + Alt + I) below of each questions to answer the questions. 
+
+1. Run the all codes in the Section 1 and show all the results
+
+2. We will use the [Wisconsin Hospital Data](https://bryantstats.github.io/SRM/ayu_pod/data/frees/HospitalCosts.csv) again for this question. 
+
+- Train a GLM with the response being the total charge, `TOTCHG`. The response distribution is Gaussian (Normal) and the link function is `identity`. Give the model summary. Make a prediction with the model.
+
+- Train a GLM with the response being the total charge, `TOTCHG`. The response distribution is Gaussian (Normal) and the link function is `log`. Give the model summary. Make a prediction with the model.
+
+3. Create a binary variable from `TOTCHG` and train a logistic regression with this newly created variable being the response.  Give the model summary. Make a prediction with the model. Calculate the training accuracy of the model. 
+
+4.  Find a dataset that has a counting variable to train a Poisson regression on.  Train a Poisson regression with the data. Give the model summary. Make a prediction with the model. Report the p-value of the Goodness of fit test for the model.
+

@@ -1,0 +1,9 @@
+# Textbooks: kept locally, not published
+ADAfaEPoV.pdf
+Computational Actuarial Science with R-Chapman and Hall_CRC (2014).pdf
+Frees_book.pdf
+ISLRv2_website.pdf
+Predictive Modeling Applications in Actuarial Science*.pdf
+# Office lock files and macOS clutter
+~$*
+.DS_Store

@@ -1,0 +1,215 @@
+---
+title: "AYU - Individual Week 3"
+format: 
+  html:
+    toc: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE)
+```
+
+*Watch the videos to see how the similar problems are solve.*
+
+### Logistic Regression
+
+**Problem 1**
+
+A statistician uses logistic regression to model a probability of success of a random variable. You are given
+
+-   There is one predictors and an intercept in the model
+
+-   The estimates of success at $x = 1$ and $x = 2$ are 0.2 and 0.3, respectively.
+
+Calculate $\hat{\beta}_1$ the estimated slope of the model.
+
+------------------------------------------------------------------------
+
+**Problem 2**
+
+You are given the following information for a GLM of customer retention
+
+![](images/a2.png){width="45%"}
+
+Calculate the probability of retention for a policy with 3 drivers and a prior rate changes of 5%.
+
+(A) Less than 0.85
+(B) At least 0.85, but less than 0.87
+(C) At least 0.87, but less than 0.89
+(D) At least 0.89, but less than 0.91
+(E) At least 0.91
+
+------------------------------------------------------------------------
+
+**Problem 3**
+
+You are given the following information for a GLM to estimate the probability of claim. Distribution selected is Binomial (Bernoulli) and the link function is logit.
+
+![](images/a3.png){width="55%"}
+
+Calculate the estimated probability of claim for
+
+-   Driver Gender: Female
+-   Vehicle Body: Sedan
+-   Area: D
+
+(A) Less than 0.045
+(B) At least 0.045, but less than 0.050
+(C) At least 0.050, but less than 0.055
+(D) At least 0.055, but less than 0.060
+(E) At least 0.060
+
+------------------------------------------------------------------------
+
+**Problem 4**
+
+You are given the following output from a logistic regression to estimate the probability of death cancer patients.
+
+![](images/a4.png){width="55%"}
+
+Calculate the estimated probability of death for a patient who has a tumor of 2cm, spends \$780 on medical treatment and 10mg of drug is injected everyday.
+
+(A) Less than 0.5
+(B) At least 0.5, but less than 0.6
+(C) At least 0.6, but less than 0.7
+(D) At least 0.7, but less than 0.8
+(E) At least 0.8
+
+------------------------------------------------------------------------
+
+### Poisson Regression
+
+**Problem 5**
+
+You are given the following for a model of vehicle claim counts by policy
+
+-   The response distribution is Poisson and the link function is a log link function
+
+-   The parameters are given as follows.
+
+![](images/a5.png){width="80%"}
+
+Calculate the predicted claim count for a policy with one adult driver and one youthful driver.
+
+(A) Less than 0.072
+(B) At least 0.072, but less than 0.074
+(C) At least 0.074, but less than 0.076
+(D) At least 0.076, but less than 0.078
+(E) At least 0.078
+
+------------------------------------------------------------------------
+
+**Problem 6**
+
+You are given the follow.
+
+![](images/a6.png){width="60%"}
+
+Calculate the predicted number deaths for a population of 100,000 females age 25
+
+(A) Less than 3
+(B) At least 3, but less than 5
+(C) At least 5, but less than 7
+(D) At least 7, but less than 9
+(E) At least 9
+
+------------------------------------------------------------------------
+
+**Problem 7**
+
+You are given the follow result of a Poisson Regression where the response is the total number of claims for a risk group. Calculate the estimated total number of claims for a risk group consisting of 2,000 female aged 25.
+
+![](images/a7.png){width="60%"}
+
+(A) Less than 1,500
+(B) At least 1,500, but less than 1,600
+(C) At least 1,600, but less than 1,700
+(D) At least 1,700, but less than 1,800
+(E) At least 1,800
+
+------------------------------------------------------------------------
+
+### Other GLMs
+
+**Problem 8** (SRM - Sample Question 11)
+
+Determine which of the following pairs of distribution and link function is the most appropriate to model if a person is hospitalized or not.
+
+(A) Normal distribution, identity link function
+(B) Normal distribution, logit link function
+(C) Binomial distribution, linear link function
+(D) Binomial distribution, logit link function
+(E) It cannot be determined from the information given.
+
+------------------------------------------------------------------------
+
+**Problem 9** (SRM - Sample Question 45)
+
+The actuarial student committee of a large firm has collected data on exam scores. A generalized linear model where the target is the exam score on a 0-10 scale is constructed using a log link, resulting in the following estimated coefficients
+
+![](4.png){width="70%"}
+
+The company is about to offer a job to an applicant who has a Master's degree and for whom the exam would be a first attempt. It would like to offer half of the study time that will result in an expected exam score of 6.0.
+
+Calculate the amount of study time that the company should offer.
+
+(A) 123 hours
+(B) 126 hours
+(C) 129 hours
+(D) 132 hours
+(E) 135 hours
+
+------------------------------------------------------------------------
+
+**Problem 10**
+
+You are given the following output of an GLM.
+
+![](video_images/26.png){width="60%"}
+
+Calculate the predicted claim size for an observation from Zone 3 with driver Class Truck and Driver Age Old.
+
+(A) Less than 650
+(B) At least 650, but less than 700
+(C) At least 700, but less than 750
+(D) At least 750, but less than 800
+(E) At least 800
+
+------------------------------------------------------------------------
+
+**Problem 11**
+
+You are given the following output of an GLM.
+
+![](video_images/27.png){width="60%"}
+
+Calculate the probability of a policy with 4 years of tenure that experienced at a 12% prior rate increase and has 225,000 in amount of insurance will retain into the next policy term.
+
+(A) Less than 0.6
+(B) At least 0.6, but less than 0.7
+(C) At least 0.7, but less than 0.8
+(D) At least 0.8, but less than 0.9
+(E) At least 0.9
+
+------------------------------------------------------------------------
+
+**Problem 12** (SRM - Sample Question 49)
+
+The actuarial student committee of a large firm has collected data on exam scores. A generalized linear model where the target is the exam score on a 0-10 scale is constructed using a log link, resulting in the following estimated coefficients
+
+| Predictor Variables                        | Coefficient |
+|:-------------------------------------------|:------------|
+| Intercept                                  | -0.1        |
+| Study Time (in units of 100 hours)         | 0.5         |
+| Attempt (1 for first attempt, else 0)      | 0.5         |
+| Master’s degree (1 for Yes, 0 for No)      | �"0.1       |
+| Interaction of Attempt and Master’s degree | 0.2         |
+
+The company is about to offer a job to an applicant who has a Master’s degree and for whom the exam would be a first attempt. It would like to offer half of the study time that will result in an expected exam score of 6.0. Calculate the amount of study time that the company should offer.
+
+(A) 123 hours
+(B) 126 hours
+(C) 129 hours
+(D) 132 hours
+(E) 135 hours
